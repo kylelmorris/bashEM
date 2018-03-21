@@ -2,6 +2,7 @@
 #
 
 #Version 1.2
+#Written by Kyle Morris, UCB
 
 # Files to plot, accepts wild card
 filein=$1
