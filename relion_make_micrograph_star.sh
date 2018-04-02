@@ -34,7 +34,7 @@ echo "Found dose weighted $(wc -l DW.dat | awk '{print $1}') micrographs"
 echo ""
 
 # Paste mic columns together
-paste noDW.dat DW.dat > miclist.dat
+paste DW.dat noDW.dat > miclist.dat
 
 # Tidy up
 rm -rf noDW.dat
