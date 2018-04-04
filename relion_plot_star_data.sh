@@ -89,7 +89,8 @@ set output "rln_data_plot.png"
 plot "columndata.dat"
 EOF
 
-gpicview rln_data_plot.png
+gpicview relion_star_plot_data/rln_data_plot.png
+open relion_star_plot_data/rln_data_plot.png
 
 #gnuplot
 gnuplot <<- EOF
@@ -103,7 +104,8 @@ set output "rln_data_plot_sel.png"
 plot "columndatasel.dat"
 EOF
 
-gpicview rln_data_plot_sel.png
+gpicview relion_star_plot_data/rln_data_plot_sel.png
+open relion_star_plot_data/rln_data_plot_sel.png
 
 #Tidy up
 rm -rf header.dat
