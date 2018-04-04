@@ -12,8 +12,9 @@ if [[ -z $1 ]] || [[ -z $2 ]] ; then
   echo ""
   echo "Variables empty, usage is $0 (1) (2)"
   echo ""
-  echo "(1) = non-dose weighted suffix (must be unique i.e. 'Micrographs/*noDW.mrc)"
-  echo "(2) = dose-weighted suffix (must be unique i.e. 'Micrographs/*.mrc | sed /noDW/d')"
+  echo "(1) = No dose-weighting suffix (must be unique i.e. 'Micrographs/*noDW.mrc')"
+  echo "(2) = Dose-weighted suffix (must be unique i.e. 'Micrographs/*DW.mrc')"
+  echo ''
   echo "Important note! You must use '' if using a wildcard"
   echo ""
 
