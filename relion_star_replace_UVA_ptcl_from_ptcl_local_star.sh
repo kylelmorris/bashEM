@@ -78,7 +78,7 @@ lineno=$(wc -l datalines.dat | awk '{print $1}')
 ###############################################################################
 # Pull out first *local.star for gathering header info
 ###############################################################################
-ls *_local.star > locallist.dat
+ls ${starreplace}/*_local.star > locallist.dat
 localstar=$(sed -n 1p locallist.dat)
 cat $localstar > localstar.star
 
@@ -115,23 +115,31 @@ while read dataline
 do
 
   #Get data line current defocusU, defocusV and defocusA (UVA) values
-  current=$(echo $dataline | awk -v mic=$imgnamecol2 -v U=$defUcol2 -v V=$defVcol2 -v A=$defAcol2 '{print $U,$V,$A}')
+  current=$(echo $dataline | awk -v mic=$imgnamecol2 -v U=$defUcol2 -v V=$defVcol2 -v A=$defAcol2 -v D=$dstepcol2 -v M=$magcol2 '{print $U,$V,$A,$D,$M,$mic}')
+  #Store these values in Variables
+  defU=$(echo $replace | awk '{print $1}')
+  defV=$(echo $replace | awk '{print $2}')
+  defA=$(echo $replace | awk '{print $3}')
+  dstep=$(echo $replace | awk '{print $4}')
+  mag=$(echo $replace | awk '{print $5}')
+  mic=$(echo $replace | awk '{print $6}')
 
   #Get data line image name from particle star data lines without path and without extension
   tmp=$(echo $dataline | awk '{print $imgname}' imgname=$imgnamecol2 | grep -oE "[^/]+$")
   imgname=${tmp%.*}
   tmp=$(echo $dataline | awk '{print $imgname}' imgname=$imgnamecol2)
   imgno=$(echo $tmp | sed 's/@.*//')
-  localctf=$(echo ${imgname}_local.star)
+  localctf=$(echo ${starreplace}/${imgname}_local.star)
 
   #Report updated useful information
   #echo -en "\e[9A"
   echo "Working on line: ${i} of ${lineno}"
   #echo "Data line:"
   #echo $dataline
-  echo "Current rlnImageName: "$imgname
-  echo "Current stack number: "$imgno
-  echo "Current UVA values:   "$current
+  echo "Current rlnImageName:      "$imgname
+  echo "Current stack number:      "$imgno
+  echo "Current UVA values:        "${defU} ${defV} ${defA}
+  echo "Current mag values:        "${dstep} ${mag}
   echo ""
 
   # Find appropriate *local.star, split into header and data lines, pull out appropriate data line
@@ -145,18 +153,21 @@ do
   sed -n ${imgno}p tmp.dat > star2lines.dat
 
   #Find the current image and according data in the starreplace data
-  replace=$(grep $imgname star2lines.dat |  awk -v mic=$micnamecol1 -v U=$defUcol1 -v V=$defVcol1 -v A=$defAcol1 -v D=$dstepcol1 -v M=$magcol1 '{print $U,$V,$A,$D,$M}')
+  replace=$(cat star2lines.dat |  awk -v mic=$micnamecol1 -v U=$defUcol1 -v V=$defVcol1 -v A=$defAcol1 -v D=$dstepcol1 -v M=$magcol1 '{print $U,$V,$A,$D,$M,$mic}')
   #Store these values in Variables
   newdefU=$(echo $replace | awk '{print $1}')
   newdefV=$(echo $replace | awk '{print $2}')
   newdefA=$(echo $replace | awk '{print $3}')
   newdstep=$(echo $replace | awk '{print $4}')
   newmag=$(echo $replace | awk '{print $5}')
+  newmic=$(echo $replace | awk '{print $6}')
 
   #Report these values as sanity check
-  echo "Local ctf star file:  "$localctf
-  echo "Replace UVA values: ${newdefU} ${newdefV} ${newdefA}"
-  echo "Replace mag values: ${newdstep} ${newmag}"
+  echo "Local ctf star file:       "$localctf
+  echo "Reading data line:         "$imgno
+  echo "Replace rlnMicrographName: "$newmic
+  echo "Replace UVA values:        "${newdefU} ${newdefV} ${newdefA}
+  echo "Replace mag values:        "${newdstep} ${newmag}
   echo ""
 
   #Create new star file line but replace the UVA defocus information
@@ -167,7 +178,7 @@ do
 
   #echo ""
 
-  echo -en "\e[9A"
+  #echo -en "\e[9A"
   #Useful information, math on percentage completeness
   #pcnt=$(bc <<< "scale=3; $i/$lineno*100")
   #echo -en "\e[1A"
