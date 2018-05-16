@@ -32,19 +32,20 @@ echo "" >> $dirin/README
 cat $dirin/note.txt >> $dirin/README
 
 #Copy files from specified Refine3D directory to backup location
-scp -P $port -r $dirin/run.job $dirout
-scp -P $port -r $dirin/run_model.star $dirout
-scp -P $port -r $dirin/run.out $dirout
-scp -P $port -r $dirin/run_sampling.star $dirout
-scp -P $port -r $dirin/run_class001_angdist.bild $dirout
-scp -P $port -r $dirin/run_class001.mrc $dirout
-scp -P $port -r $dirin/run_data.star $dirout
-scp -P $port -r $dirin/run.err $dirout
-scp -P $port -r $dirin/run_half1_class001_unfil.mrc $dirout
-scp -P $port -r $dirin/run_half2_class001_unfil.mrc $dirout
-scp -P $port -r $dirin/*pipeline* $dirout
-scp -P $port -r $dirin/note.txt $dirout
-scp -P $port -r $dirin/README $dirout
+scp -P $port -r $dirin/run.job \
+$dirin/run_model.star \
+$dirin/run.out \
+$dirin/run_sampling.star \
+$dirin/run_class001_angdist.bild \
+$dirin/run_class001.mrc \
+$dirin/run_data.star \
+$dirin/run.err \
+$dirin/run_half1_class001_unfil.mrc \
+$dirin/run_half2_class001_unfil.mrc \
+$dirin/*pipeline* \
+$dirin/note.txt \
+$dirin/README \
+$dirout
 
 rm -rf $dirin/README
 
