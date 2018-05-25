@@ -12,7 +12,7 @@ if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]]; then
   echo "Variables empty, usage is ${0} (1) (2) (3) (4)"
   echo ""
   echo "(1) = Pixel size"
-  echo "(2) = Map b-factor (to normalise to 0 A)"
+  echo "(2) = Map b-factor (as measured by Relion)"
   echo "(3) = Resolution"
   echo "(4) = zflip (y/n)"
   exit
@@ -32,18 +32,33 @@ if [[ $flip == n ]] ; then
   mapout=$(basename $mapin .mrc)
 fi
 
+# invert bfactor for unsharpening
+nosharp=$(echo "scale=0;${bf}*-1" | bc)
+echo ""
+echo "Applying b-factor of ${nosharp} to create unsharpened map and structrue factors..."
+echo ""
+
 # Make unsharpened map
 printf "Making map with 0A sharpening\n"
-relion_image_handler --i ${mapin} --o ${mapout}_BF-0A.mrc --angpix $apix --bfactor $bf
+relion_image_handler --i ${mapin} --o ${mapout}_BF-0A.mrc --angpix $apix --bfactor $nosharp
 
 # Round b-factor number
-autobf=$(echo "scale=0;-${bf}/1" | bc)
+autobf=$(echo "scale=0;${bf}/1" | bc)
+echo ""
+echo "Applying b-factor of ${autobf} to create optimal global sharpened map and structrue factors..."
+echo ""
 
 # Make maps sharpened by autoBF level set by relion
 printf "Making map with auto BF sharpening\n"
-relion_image_handler --i ${mapout}_BF-0A.mrc --o ${mapout}_BF${autobf}A.mrc --angpix $apix --bfactor -${bf}
+relion_image_handler --i ${mapout}_BF-0A.mrc --o ${mapout}_BF${autobf}A.mrc --angpix $apix --bfactor ${bf}
 printf "Making map structure factors with auto BF sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF-0A.mrc out=${mapout}_BF${autobf}A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF${autobf}A.mrc out=${mapout}_BF${autobf}A.mtz d_min=${dmin}
+printf "Making map structure factors with auto BF sharpening\n"
+phenix.map_to_structure_factors postprocess_masked.mrc out=postprocess_masked.mtz d_min=${dmin}
+
+echo ""
+echo "Applying systematic b-factors of -50, -100, -150 and -250..."
+echo ""
 
 # Make sharpen map series
 printf "Making map with -50A sharpening\n"
@@ -77,3 +92,6 @@ echo "apix:" $1 >> relion_postprocess_make_vol_series.out
 echo "b-factor (measured by relion):" $2 >> relion_postprocess_make_vol_series.out
 echo "resolution:" $3 >> relion_postprocess_make_vol_series.out
 echo "zflip:" $4 >> relion_postprocess_make_vol_series.out
+
+echo ""
+echo "Done!"
