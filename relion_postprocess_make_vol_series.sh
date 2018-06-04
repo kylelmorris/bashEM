@@ -6,7 +6,7 @@ bf=$2
 dmin=$3
 flip=$4
 
-if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]]; then
+if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]] || [[ -z $4 ]]; then
 
   echo ""
   echo "Variables empty, usage is ${0} (1) (2) (3) (4)"
@@ -17,6 +17,16 @@ if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]]; then
   echo "(4) = zflip (y/n)"
   exit
 
+fi
+
+# check is postprocessing map exists
+if [[ -f postprocess_masked.mrc ]] ; then
+  echo ""
+  echo "Success! postprocess_masked.mrc exists, continuing..."
+else
+  echo ""
+  echo "postprocess_masked.mrc not found, exiting..."
+  exit
 fi
 
 # zflip if necessary
@@ -95,3 +105,16 @@ echo "zflip:" $4 >> relion_postprocess_make_vol_series.out
 
 echo ""
 echo "Done!"
+
+# Ask user if they want to perform local sharpening with phenix.autosharpen
+echo "Do you want to perform local sharpening as well? y/n"
+read p
+if [ $p == y ] ; then
+  echo "Performing global and local optimal b-factor sharpening with phenix.autosharpen..."
+  mkdir autosharpen.global
+  mkdir autosharpen.local
+  phenix.auto_sharpen ${mapin} resolution=${dmin} local_sharpening=False output_directory=autosharpen.global
+  phenix.auto_sharpen ${mapin} resolution=${dmin} local_sharpening=False output_directory=autosharpen.global
+else
+  echo "Skipping global and local optimal b-factor sharpening..."
+fi

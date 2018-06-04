@@ -32,6 +32,7 @@ echo "" >> $dirin/README
 cat $dirin/note.txt >> $dirin/README
 
 #Copy files from specified Refine3D directory to backup location
+#rsync -aP --rsh=\'ssh -p ${port}\' $dirin/run.job \
 scp -P $port -r $dirin/run.job \
 $dirin/run_model.star \
 $dirin/run.out \
