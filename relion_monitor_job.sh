@@ -20,4 +20,4 @@ if [[ -z $lines ]] ; then
 fi
 
 
-tail -f -n ${lines} ./Refine3D/${jobin}/run.out
+tail -f -n ${lines} ${jobin}/run.out
