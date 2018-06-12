@@ -16,7 +16,7 @@ if [[ -z $1 ]] ; then
 fi
 
 if [[ -z $lines ]] ; then
-  lines=50
+  lines=100
 fi
 
 
