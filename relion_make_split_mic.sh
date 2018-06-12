@@ -14,4 +14,5 @@ relion_star_printtable $star data_ _rlnDefocusU _rlnMicrographName | sort | uniq
 
 echo "Made split_mics_defocus.dat containing micrgraphs organised by defocus"
 echo "Introduce spaces where you want your groups to be and then run:"
-echo "make_grouped_star_bash on split_mics_defocus.dat to make your grouped *.star file"
+echo ""
+echo "relion_make_grouped_star.sh on split_mics_defocus.dat to make your grouped *.star file"
