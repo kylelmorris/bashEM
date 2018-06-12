@@ -12,16 +12,17 @@ echo "-y - yrange for plotting (format: 0:1)"
 echo "-l - rlnLogLikeliContribution"
 echo "-s - rlnNrOfSignificantSamples"
 echo "-p - rlnMaxValueProbDistribution"
+echo "-t - thresold for filtering data (format: -5:7)"
 echo ""
 echo "-m manual column entry         (type column manually)"
 echo "------------------------------------------------------------------"
 
 flagcheck=0
 
-while getopts ':-i:lspm:x:y:' flag; do
+while getopts ':-i:lspm:x:y:t:' flag; do
   case "${flag}" in
     i) starin=$OPTARG
-    flagcheck=1 ;;
+    flagcheck=0 ;;
     l) columnname='rlnLogLikeliContribution'
     flagcheck=1 ;;
     s) columnname='rlnNrOfSignificantSamples'
@@ -34,6 +35,8 @@ while getopts ':-i:lspm:x:y:' flag; do
     flagcheck=1 ;;
     y) yrange=$OPTARG
     flagcheck=1 ;;
+    t) threshold=$OPTARG
+    flagcheck=1 ;;
     \?)
       echo ""
       echo "Invalid option, please read initial program instructions..."
@@ -44,10 +47,13 @@ done
 
 if [ $flagcheck = 0 ] ; then
   echo ""
-  echo "No column, exiting, I require an input..."
+  echo "No options used, exiting, I require an input..."
   echo ""
   exit 1
 fi
+
+#Remove existing analysis
+rm -rf relion_star_plot_data
 
 #Get column number in sar file
 echo 'star file in:' $starin
@@ -66,16 +72,13 @@ echo 'Number of particles to plot data for:' $(wc -l columndata.dat | awk '{prin
 #Filter star file by threshold
 if [[ -z $threshold ]] ; then
   cat $starin > tmp.star
-else
-  awk -v threshold=$threshold -v column=$column '$column < threshold' $starin > tmp.star
-fi
 
-awk '{if (NF > 3) exit; print }' < $starin > header.dat
-cat header.dat tmp.star > star_sel.star
-## Get lines only containing images with stats above threshold
-awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > columndatasel.dat
-# Get number of particles selected from class
-echo 'Number of particles to extract above threshold:' $(wc -l columndatasel.dat | awk {'print $1'})
+  awk '{if (NF > 3) exit; print }' < $starin > header.dat
+  cat header.dat tmp.star > star_sel.star
+  ## Get lines only containing images with stats above threshold
+  awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > columndata.dat
+  # Get number of particles selected from class
+  echo 'Number of particles to extract above threshold:' $(wc -l columndata.dat | awk {'print $1'})
 
 #gnuplot
 gnuplot <<- EOF
@@ -89,8 +92,47 @@ set output "rln_data_plot.png"
 plot "columndata.dat"
 EOF
 
-gpicview relion_star_plot_data/rln_data_plot.png
-open relion_star_plot_data/rln_data_plot.png
+  mkdir relion_star_plot_data
+  mv columndata.dat relion_star_plot_data
+  mv rln_data_plot.png relion_star_plot_data
+
+  gpicview relion_star_plot_data/rln_data_plot.png
+  open relion_star_plot_data/rln_data_plot.png
+
+else
+
+  echo "Threshold was set to: ${threshold}"
+  thresholdlow=$(echo ${threshold} | cut -d: -f1)
+  thresholdhigh=$(echo ${threshold} | cut -d: -f2)
+  echo "Threshold low is:  ${thresholdlow}"
+  echo "Threshold high is: ${thresholdhigh}"
+
+  awk -v threshold=$thresholdhigh -v column=$column '$column < threshold' $starin > tmp.star
+  awk -v threshold=$thresholdlow -v column=$column '$column > threshold' tmp.star > tmp1.star
+  mv tmp1.star tmp.star
+
+  awk '{if (NF > 3) exit; print }' < $starin > header.dat
+  cat header.dat tmp.star > star_sel.star
+  ## Get lines only containing images with stats above threshold
+  awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > columndatasel.dat
+  # Get number of particles selected from class
+  echo 'Number of particles to extract within threshold:' $(wc -l columndatasel.dat | awk {'print $1'})
+
+#gnuplot
+gnuplot <<- EOF
+set xlabel "x"
+set ylabel "y"
+set xrange [$xrange]
+set yrange [$yrange]
+set key outside
+set term png size 1200,600
+set output "rln_data_plot.png"
+plot "columndata.dat"
+EOF
+
+  mkdir relion_star_plot_data
+  mv columndata.dat relion_star_plot_data
+  mv rln_data_plot.png relion_star_plot_data
 
 #gnuplot
 gnuplot <<- EOF
@@ -104,19 +146,19 @@ set output "rln_data_plot_sel.png"
 plot "columndatasel.dat"
 EOF
 
-gpicview relion_star_plot_data/rln_data_plot_sel.png
-open relion_star_plot_data/rln_data_plot_sel.png
+  mv columndatasel.dat relion_star_plot_data
+  mv rln_data_plot_sel.png relion_star_plot_data
+  mv star_sel.star relion_star_plot_data
+
+  gpicview relion_star_plot_data/rln_data_plot_sel.png
+  open relion_star_plot_data/rln_data_plot_sel.png
+
+fi
 
 #Tidy up
 rm -rf header.dat
 rm -rf tmp.star
-rm -rf relion_star_plot_data
-mkdir relion_star_plot_data
-mv columndata.dat relion_star_plot_data
-mv columndatasel.dat relion_star_plot_data
-mv rln_data_plot.png relion_star_plot_data
-mv rln_data_plot_sel.png relion_star_plot_data
-mv star_sel.star relion_star_plot_data
+
 echo ''
 echo 'Tidying up...'
 echo 'Created folder with data and plots in current working directory called relion_star_plot_data'
