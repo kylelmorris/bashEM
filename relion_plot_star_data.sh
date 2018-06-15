@@ -52,6 +52,9 @@ if [ $flagcheck = 0 ] ; then
   exit 1
 fi
 
+#Get input star file basename
+file=$(basename $starin .star)
+
 #Remove existing analysis
 rm -rf relion_star_plot_data
 
@@ -62,12 +65,13 @@ echo 'xrange:' $xrange
 echo 'yrange:' $yrange
 echo ''
 column=$(grep ${columnname} ${starin} | awk '{print $2}' | sed 's/#//g')
+columnname=$(grep ${columnname} ${starin} | awk '{print $1}' | sed 's/#//g')
 echo $columnname 'is column number:' $column
 echo ''
 
 #Send column data to file, filter out empty lines and number particles for plotting
-awk -v column=$column -v starin=$starin {'print $column'} $starin | grep -v '^$' | cat -n > columndata.dat
-echo 'Number of particles to plot data for:' $(wc -l columndata.dat | awk '{print $1}')
+awk -v column=$column -v starin=$starin {'print $column'} $starin | grep -v '^$' | cat -n > ${columnname}.dat
+echo 'Number of particles to plot data for:' $(wc -l ${columnname}.dat | awk '{print $1}')
 
 #Filter star file by threshold
 if [[ -z $threshold ]] ; then
@@ -76,24 +80,24 @@ if [[ -z $threshold ]] ; then
   awk '{if (NF > 3) exit; print }' < $starin > header.dat
   cat header.dat tmp.star > star_sel.star
   ## Get lines only containing images with stats above threshold
-  awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > columndata.dat
+  awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > ${columnname}.dat
   # Get number of particles selected from class
-  echo 'Number of particles to extract above threshold:' $(wc -l columndata.dat | awk {'print $1'})
+  echo 'Number of particles:' $(wc -l ${columnname}.dat | awk {'print $1'})
 
 #gnuplot
 gnuplot <<- EOF
-set xlabel "x"
-set ylabel "y"
+set xlabel "Image number"
+set ylabel "${columnname}"
 set xrange [$xrange]
 set yrange [$yrange]
 set key outside
 set term png size 1200,600
 set output "rln_data_plot.png"
-plot "columndata.dat"
+plot "${columnname}.dat"
 EOF
 
   mkdir relion_star_plot_data
-  mv columndata.dat relion_star_plot_data
+  mv ${columnname}.dat relion_star_plot_data
   mv rln_data_plot.png relion_star_plot_data
 
   gpicview relion_star_plot_data/rln_data_plot.png
@@ -101,6 +105,7 @@ EOF
 
 else
 
+  echo ""
   echo "Threshold was set to: ${threshold}"
   thresholdlow=$(echo ${threshold} | cut -d: -f1)
   thresholdhigh=$(echo ${threshold} | cut -d: -f2)
@@ -113,42 +118,42 @@ else
 
   awk '{if (NF > 3) exit; print }' < $starin > header.dat
   cat header.dat tmp.star > star_sel.star
-  ## Get lines only containing images with stats above threshold
-  awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > columndatasel.dat
+  ## Get lines only containing images with stats within threshold
+  awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > ${columnname}_sel.dat
   # Get number of particles selected from class
-  echo 'Number of particles to extract within threshold:' $(wc -l columndatasel.dat | awk {'print $1'})
+  echo 'Number of particles to extract within threshold:' $(wc -l ${columnname}_sel.dat | awk {'print $1'})
 
 #gnuplot
 gnuplot <<- EOF
-set xlabel "x"
-set ylabel "y"
+set xlabel "Image number"
+set ylabel "${columnname}"
 set xrange [$xrange]
 set yrange [$yrange]
 set key outside
 set term png size 1200,600
 set output "rln_data_plot.png"
-plot "columndata.dat"
+plot "${columnname}.dat"
 EOF
 
   mkdir relion_star_plot_data
-  mv columndata.dat relion_star_plot_data
+  mv ${columnname}.dat relion_star_plot_data
   mv rln_data_plot.png relion_star_plot_data
 
 #gnuplot
 gnuplot <<- EOF
-set xlabel "x"
-set ylabel "y"
+set xlabel "Image number"
+set ylabel "${columnname}"
 set xrange [$xrange]
 set yrange [$yrange]
 set key outside
 set term png size 1200,600
 set output "rln_data_plot_sel.png"
-plot "columndatasel.dat"
+plot "${columnname}_sel.dat"
 EOF
 
-  mv columndatasel.dat relion_star_plot_data
+  mv ${columnname}_sel.dat relion_star_plot_data
   mv rln_data_plot_sel.png relion_star_plot_data
-  mv star_sel.star relion_star_plot_data
+  mv star_sel.star relion_star_plot_data/${file}_sel.star
 
   gpicview relion_star_plot_data/rln_data_plot_sel.png
   open relion_star_plot_data/rln_data_plot_sel.png
@@ -158,6 +163,7 @@ fi
 #Tidy up
 rm -rf header.dat
 rm -rf tmp.star
+rm -rf star_sel.star
 
 echo ''
 echo 'Tidying up...'
