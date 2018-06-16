@@ -69,9 +69,9 @@ columnname=$(grep ${columnname} ${starin} | awk '{print $1}' | sed 's/#//g')
 echo $columnname 'is column number:' $column
 echo ''
 
-#Send column data to file, filter out empty lines and number particles for plotting
+#Send column data to file, filter out empty lines and number images for plotting
 awk -v column=$column -v starin=$starin {'print $column'} $starin | grep -v '^$' | cat -n > ${columnname}.dat
-echo 'Number of particles to plot data for:' $(wc -l ${columnname}.dat | awk '{print $1}')
+echo 'Number of images to plot data for:' $(wc -l ${columnname}.dat | awk '{print $1}')
 
 #Filter star file by threshold
 if [[ -z $threshold ]] ; then
@@ -81,8 +81,8 @@ if [[ -z $threshold ]] ; then
   cat header.dat tmp.star > star_sel.star
   ## Get lines only containing images with stats above threshold
   awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > ${columnname}.dat
-  # Get number of particles selected from class
-  echo 'Number of particles:' $(wc -l ${columnname}.dat | awk {'print $1'})
+  # Get number of images selected from class
+  echo 'Number of images:' $(wc -l ${columnname}.dat | awk {'print $1'})
 
 #gnuplot
 gnuplot <<- EOF
@@ -120,8 +120,8 @@ else
   cat header.dat tmp.star > star_sel.star
   ## Get lines only containing images with stats within threshold
   awk -v column=$column {'print $column'} star_sel.star | grep -v '^$' | cat -n > ${columnname}_sel.dat
-  # Get number of particles selected from class
-  echo 'Number of particles to extract within threshold:' $(wc -l ${columnname}_sel.dat | awk {'print $1'})
+  # Get number of images selected from class
+  echo 'Number of images to extract within threshold:' $(wc -l ${columnname}_sel.dat | awk {'print $1'})
 
 #gnuplot
 gnuplot <<- EOF
