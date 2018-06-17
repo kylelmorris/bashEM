@@ -22,11 +22,16 @@ if [[ -z $3 ]] ; then
 fi
 
 #Copy files
-scp -P $port -r ${local}/default_pipeline.star \
+echo "rsync -aP --rsh='ssh -p ${port}' \
 ${local}/.gui* \
 ${local}/.Nodes \
-${remote}
+${remote}" > backup.com
+
+bash backup.com
 
 echo ""
 echo "Copied all gui settings, default_pipeline.star and .Nodes"
+
+rm -rf backup.com
+
 echo "Done!"
