@@ -15,7 +15,7 @@ if [[ -z $1 ]] ; then
 
 fi
 
-if [[ -s ${jobin}/run.err ]]
+if [[ -s ${jobin}/run.err ]] ; then
   echo "No errors found, continuing..."
 else
   cat ${jobin}/run.err
