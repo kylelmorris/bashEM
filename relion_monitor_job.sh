@@ -20,7 +20,7 @@ if [[ -s ${jobin}/run.err ]] ; then
 else
   cat ${jobin}/run.err
   echo ""
-  echo "Errors found in run.err, do you want to continue?"
+  echo "Displaying run.err first, do you want to continue?"
   echo "Enter or ctrl-c"
   read p
 fi
