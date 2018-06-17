@@ -15,9 +15,18 @@ if [[ -z $1 ]] ; then
 
 fi
 
+if [[ -s ${jobin}/run.err ]]
+  echo "No errors found, continuing..."
+else
+  cat ${jobin}/run.err
+  echo ""
+  echo "Errors found in run.err, do you want to continue?"
+  echo "Enter or ctrl-c"
+  read p
+fi
+
 if [[ -z $lines ]] ; then
   lines=100
 fi
-
 
 tail -f -n ${lines} ${jobin}/run.out
