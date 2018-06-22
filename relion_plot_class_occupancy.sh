@@ -37,6 +37,8 @@ echo ""
 echo "(1) = First class number (optional)"
 echo "(2) = Last class number (optional)"
 echo ""
+echo "Note that if you are using this in OSX you will need to edit relion_star_printtable to use gawk"
+echo ""
 
 if [[ -z $1 ]] || [[ -z $2 ]] ; then
   echo ""
@@ -75,7 +77,7 @@ done
 
 # Transpose (http://stackoverflow.com/questions/25062169/using-bash-to-sort-data-horizontally)
 transpose () {
-  awk '{for (i=1; i<=NF; i++) a[i,NR]=$i; max=(max<NF?NF:max)}
+  gawk '{for (i=1; i<=NF; i++) a[i,NR]=$i; max=(max<NF?NF:max)}
         END {for (i=1; i<=max; i++)
               {for (j=1; j<=NR; j++)
                   printf "%s%s", a[i,j], (j<NR?OFS:ORS)
@@ -91,7 +93,7 @@ rm -rf tmpocc.dat
 rm -rf tmpocc_new.dat
 
 ##Gnu plot
-smoothlines=$(wc -l class_occupancy.dat | awk '{print $1}')
+smoothlines=$(wc -l class_occupancy.dat | gawk '{print $1}')
 
 if (($smoothlines > 3))
 then
@@ -122,3 +124,4 @@ mv class_occupancy.png class_occupancy
 mv classocc.dat class_occupancy
 
 eog class_occupancy/class_occupancy.png &
+open class_occupancy/class_occupancy.png &
