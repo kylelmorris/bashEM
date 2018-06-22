@@ -56,15 +56,19 @@ else
   xhigh=$2
 fi
 
+## Make a backup of the *model.star
+mkdir -p model
+scp -r *model.star model
+
 ##Print the raw class occupancy data to terminal
 iteration=$(ls *model.star* | wc -l)
 
-relion_star_printtable run_it000_model.star data_model_classes _rlnClassDistribution > classocc.dat
+relion_star_printtable run_*000_model.star data_model_classes _rlnClassDistribution > classocc.dat
 
 for (( i=1; i<$iteration; i++ ))
 do
   j=$(printf "%03d" $i)
-  relion_star_printtable run_it"$j"_model.star data_model_classes _rlnClassDistribution > tmpocc.dat
+  relion_star_printtable run_*"$j"_model.star data_model_classes _rlnClassDistribution > tmpocc.dat
   paste classocc.dat tmpocc.dat > tmpocc_new.dat
   mv tmpocc_new.dat classocc.dat
 done
@@ -101,8 +105,6 @@ else
 	lines='with lines lw 2'
 	echo ''
 fi
-
-
 
 gnuplot <<- EOF
 set xlabel "3D classification iteration"
