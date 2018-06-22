@@ -59,8 +59,8 @@ else
 fi
 
 ## Make a backup of the *model.star
-mkdir -p class_occupancy/model
-scp -r *model.star class_occupancy/model
+mkdir -p class_occupancy/model_star_backup
+scp -r *model.star class_occupancy/model_star_backup
 
 ##Print the raw class occupancy data to terminal
 iteration=$(ls *model.star* | wc -l)
