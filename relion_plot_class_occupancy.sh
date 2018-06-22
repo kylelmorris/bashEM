@@ -57,8 +57,8 @@ else
 fi
 
 ## Make a backup of the *model.star
-mkdir -p model
-scp -r *model.star model
+mkdir -p class_occupancy/model
+scp -r *model.star class_occupancy/model
 
 ##Print the raw class occupancy data to terminal
 iteration=$(ls *model.star* | wc -l)
@@ -117,4 +117,8 @@ set output "class_occupancy.png"
 plot for [i=$classfirst:$classlast] "class_occupancy.dat" using i title 'class' .i $lines
 EOF
 
-eog class_occupancy.png &
+mv class_occupancy.dat class_occupancy
+mv class_occupancy.png class_occupancy
+mv classocc.dat class_occupancy
+
+eog class_occupancy/class_occupancy.png &
