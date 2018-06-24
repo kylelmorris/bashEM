@@ -45,6 +45,7 @@ if [[ -z $1 ]] ; then
   echo ""
   echo "Location of *model.star needs to be specified..."
   echo ""
+  exit
 else
   dir=$1
   if [[ -z $2 ]] || [[ -z $3 ]] ; then
