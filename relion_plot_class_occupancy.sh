@@ -32,31 +32,43 @@ echo "*************************************************************************"
 ##Test if input variables are empty (if or statement)
 
 echo ""
-echo "Usage is relion_class_occupancy (1) (2)"
+echo "Usage is relion_class_occupancy (1) (2) (3)"
 echo ""
-echo "(1) = First class number (optional)"
-echo "(2) = Last class number (optional)"
+echo "(1) = directory containing *model.star"
+echo "(2) = First class number (optional)"
+echo "(3) = Last class number (optional)"
 echo ""
 echo "Note that if you are using this in OSX you will need to edit relion_star_printtable to use gawk"
 echo ""
 
-if [[ -z $1 ]] || [[ -z $2 ]] ; then
+if [[ -z $1 ]] ; then
   echo ""
-  echo "No variables provided analysing all classes"
+  echo "Location of *model.star needs to be specified..."
   echo ""
-  classfirst=1
-  classlast=$(ls *model.star* | wc -l)
 else
-  echo ""
-  echo "Analysing all classes, but plotting" $1 "to" $2
-  echo ""
-  #classfirst=$1 ; CF=$(printf "%03d" $classfirst) # Use CF variable in script
-  #classlast=$2 ; CL=$(printf "%03d" $classlast) # Use CL variable in script
-  classfirst=1
-  classlast=$(ls *model.star* | wc -l)
-  xlow=$1
-  xhigh=$2
+  dir=$1
+  if [[ -z $2 ]] || [[ -z $3 ]] ; then
+    echo ""
+    echo "No variables provided analysing all classes"
+    echo ""
+    classfirst=1
+    classlast=$(ls *model.star* | wc -l)
+  else
+    echo ""
+    echo "Analysing all classes, but plotting" $1 "to" $2
+    echo ""
+    #classfirst=$1 ; CF=$(printf "%03d" $classfirst) # Use CF variable in script
+    #classlast=$2 ; CL=$(printf "%03d" $classlast) # Use CL variable in script
+    classfirst=1
+    classlast=$(ls *model.star* | wc -l)
+    xlow=$1
+    xhigh=$2
+  fi
 fi
+
+## Change directory to where *model.star files are
+cwd=$(pwd)
+cd $dir
 
 ## Make a backup of the *model.star
 mkdir -p class_occupancy/model_star_backup
@@ -125,3 +137,6 @@ mv classocc.dat class_occupancy
 
 eog class_occupancy/class_occupancy.png &
 open class_occupancy/class_occupancy.png &
+
+# Change back to original working directory
+cd $cwd
