@@ -47,7 +47,13 @@ if [[ -z $1 ]] ; then
   echo ""
   exit
 else
+  
   dir=$1
+  ## Change directory to where *model.star files are
+  cwd=$(pwd)
+  echo "Changing directory to ${dir}"
+  cd ${dir}
+
   if [[ -z $2 ]] || [[ -z $3 ]] ; then
     echo ""
     echo "No variables provided analysing all classes"
@@ -66,11 +72,6 @@ else
     xhigh=$2
   fi
 fi
-
-## Change directory to where *model.star files are
-cwd=$(pwd)
-echo "Changing directory to ${dir}"
-cd ${dir}
 
 ## Make a backup of the *model.star
 mkdir -p class_occupancy/model_star_backup
