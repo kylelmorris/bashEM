@@ -69,6 +69,7 @@ fi
 
 ## Change directory to where *model.star files are
 cwd=$(pwd)
+echo "Changing directory to ${dir}"
 cd $dir
 
 ## Make a backup of the *model.star
