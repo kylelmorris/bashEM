@@ -50,15 +50,20 @@ i=${start}
 while [ $i -le ${end} ]
 do
   j=$(printf "%04d\n" $i)
-  echo *$j*.mrc >> .filelist_${time}.dat
+  ls *$j*.mrc >> .filelist_${time}.dat
   i=$((i+1))
 done
-sed -i '/\*/d' .filelist_${time}.dat
+cat .filelist_${time}.dat | sed '/\*/d' | sed '/^\s*$/d' > tmp.dat
+mv tmp.dat .filelist_${time}.dat
+
+echo "Made filelist in: .filelist_${time}.dat"
+echo "This will contain the files for processing, continue?"
+read p
 
 #Run gctf per micrograph since local only seems to work this way
-while read file; do
-  name=$(sed -n "$i"p filelist_${time}.dat | awk {'print $2'})
-  gctf-v1.06 --apix 1.159 --kV 200 --cs 2.6 --ac 0.1 --do_EPA --do_validation --do_unfinished --do_local_refine --boxsuffix _automatch.star --gid $gpu $file
+while read p; do
+  echo $p
+  gctf-v1.06 --apix 1.159 --kV 200 --cs 2.6 --ac 0.1 --do_EPA --do_validation --do_unfinished --do_local_refine --boxsuffix _automatch.star --gid $gpu $p
 done < .filelist_${time}.dat
 
-rm -rf .filelist_${time}.dat
+#rm -rf .filelist_${time}.dat
