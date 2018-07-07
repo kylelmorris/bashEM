@@ -58,7 +58,7 @@ columnname=rlnDetectorPixelSize
 column=$(grep ${columnname} ${star1} | awk '{print $2}' | sed 's/#//g')
 #echo $columnname 'is column number:' $column
 temp=$(awk -v column=$column '{print $column}' star1line.dat)
-dstep=$(bc <<< "scale=1; ${temp}/1")
+dstep=$(bc <<< "scale=6; ${temp}/1")
 
 columnname=rlnMagnification
 column=$(grep ${columnname} ${star1} | awk '{print $2}' | sed 's/#//g')
