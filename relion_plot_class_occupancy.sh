@@ -32,7 +32,7 @@ echo "*************************************************************************"
 ##Test if input variables are empty (if or statement)
 
 echo ""
-echo "Usage is relion_class_occupancy (1) (2) (3)"
+echo "Usage is $(basename $0) (1) (2) (3)"
 echo ""
 echo "(1) = directory containing *model.star"
 echo "(2) = First class number (optional)"
@@ -44,10 +44,11 @@ echo ""
 if [[ -z $1 ]] ; then
   echo ""
   echo "Location of *model.star needs to be specified..."
+  echo "i.e. $(basename $0) ./Class3D/job007"
   echo ""
   exit
 else
-  
+
   dir=$1
   ## Change directory to where *model.star files are
   cwd=$(pwd)

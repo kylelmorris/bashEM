@@ -20,6 +20,20 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ############################################################################
+##Test if input variables are empty (if or statement)
+
+echo ""
+echo "Usage is $(basename $0) (1)"
+echo ""
+echo "(1) = directory containing run.out"
+echo "i.e. $(basename $0) ./Refine3D/job007"
+echo ""
+
+dir=$1
+## Change directory to where *model.star files are
+cwd=$(pwd)
+echo "Changing directory to ${dir}"
+cd ${dir}
 
 if [[ -e run.out ]] ; then
   echo "run.out exists, proceeding to plot..."
@@ -85,3 +99,6 @@ EOF
 
 open run_data_plot.png
 eog run_data_plot.png
+
+# Change back to original working directory
+cd $cwd
