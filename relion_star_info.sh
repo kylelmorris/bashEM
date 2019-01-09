@@ -37,7 +37,7 @@ fi
 rm -rf star1header.dat
 
 #Get header of star1
-awk 'NF > 3' < ${star1} > star1header.dat
+awk 'NF < 3' < ${star1} > star1header.dat
 
 #Get datalines of star1 and remove blank lines
 diff star1header.dat ${star1} | awk '!($1="")' > star1lines.dat
