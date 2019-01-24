@@ -19,7 +19,7 @@ if [[ -z $1 ]] ; then
   echo "i.e. $(basename $0) ./Class3D/job007/run_it025_model.star"
   echo ""
   exit
-else
+fi
 
 # Get total class occupancy
 total=$(relion_star_printtable $starin data_model_classes _rlnClassDistribution | awk -F '|' '{sum+=$NF} END {print sum}')
