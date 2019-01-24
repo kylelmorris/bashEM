@@ -41,6 +41,9 @@ echo ""
 echo "Note that if you are using this in OSX you will need to edit relion_star_printtable to use gawk"
 echo ""
 
+# Test if Relion is sourced and available
+command -v relion >/dev/null 2>&1 || { echo >&2 "Relion does not appear to be installed or loaded..."; exit 1; }
+
 if [[ -z $1 ]] ; then
   echo ""
   echo "Location of *model.star needs to be specified..."
