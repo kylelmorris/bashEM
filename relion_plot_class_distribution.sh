@@ -3,6 +3,14 @@
 
 starin=$1
 
+echo ""
+echo "Usage is $(basename $0) (1)"
+echo ""
+echo "(1) = *model.star"
+echo ""
+echo "Note that if you are using this in OSX you will need to edit relion_star_printtable to use gawk"
+echo ""
+
 # Get total class occupancy
 total=$(relion_star_printtable $starin data_model_classes _rlnClassDistribution | awk -F '|' '{sum+=$NF} END {print sum}')
 

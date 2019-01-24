@@ -23,10 +23,17 @@
 
 find=$1
 replace=$2
+
 echo ''
 echo 'Usage:'
 echo 'replace_in_filename find_string replace_string'
 echo ''
+
+if [[ -z $1 ]] ; then
+  echo "No find term provided, exiting..."
+  exit
+fi
+
 echo 'Executing the following command:'
 echo ''
 echo 'for i in * ; do mv "$i" "${i/"${find}"/"${replace}"}" ; done'
