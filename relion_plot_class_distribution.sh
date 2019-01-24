@@ -3,6 +3,8 @@
 
 starin=$1
 
+
+
 echo ""
 echo "Usage is $(basename $0) (1)"
 echo ""
@@ -10,6 +12,14 @@ echo "(1) = *model.star"
 echo ""
 echo "Note that if you are using this in OSX you will need to edit relion_star_printtable to use gawk"
 echo ""
+
+if [[ -z $1 ]] ; then
+  echo ""
+  echo "Location of *model.star needs to be specified..."
+  echo "i.e. $(basename $0) ./Class3D/job007/run_it025_model.star"
+  echo ""
+  exit
+else
 
 # Get total class occupancy
 total=$(relion_star_printtable $starin data_model_classes _rlnClassDistribution | awk -F '|' '{sum+=$NF} END {print sum}')
