@@ -1,6 +1,9 @@
 #!/bin/bash
 #
 
+# Test if Relion is sourced and available
+command -v relion >/dev/null 2>&1 || { echo >&2 "Relion does not appear to be installed or loaded..."; exit 1; }
+
 mapin=$1
 mapout=$2
 apix=$3
