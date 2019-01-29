@@ -21,11 +21,11 @@ if [[ -z $1 ]] || [[ -z $2 ]] ; then
 fi
 
 # Make 2D projections of EM density map using eman2
-e2project3d.py ${mapin} --outfile=projections_${sampling}.hdf --orientgen=eman:delta=${sampling} --sym=c1 --projector=standard --verbose=1 -f
+e2project3d.py ${mapin} --outfile=projections_${sampling}deg.hdf --orientgen=eman:delta=${sampling} --sym=c1 --projector=standard --verbose=1 -f
 
 # Low pass filter the projections
 lowpass=$(echo "scale=3; 1/$lp" | bc)
-e2proc2d.py projections_${sampling}.hdf projections_LP_${lp}.hdf --process filter.lowpass.gauss:cutoff_freq=${lowpass}
+e2proc2d.py projections_${sampling}deg.hdf projections_${sampling}deg_LP${lp}.hdf --process filter.lowpass.gauss:cutoff_freq=${lowpass}
 
 # Convert to mrc
 #e2proc2d.py projections.hdf projections.mrc

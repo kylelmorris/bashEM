@@ -59,15 +59,15 @@ while read p; do
    j=$(echo "$i"p)
 
    name=$(sed -n "$i"p filelist.dat)
-   echo "infile:" $name"."$filein
 
-   echo "outfile:" $name"."$fileout
+   infile=$name"."$filein
+   outfile=$name"."$fileout
 
-   e2proc2d.py $option1 $filein $fileout $name"."$filein $name$suffix"."$fileout
-   echo "e2proc2d.py" $option1 $name"."$filein $name$suffix"."$fileout
+   echo "infile: ${infile}"
+   echo "outfile: ${outfile}"
 
-   rm -rf $name"."$filein
-   echo "Removing ${name}.${filein} after conversion"
+   e2proc2d.py $option1 $infile $outfile
+   echo "e2proc2d.py" $option1 $infile $outfile
 
    i=$((i+1))
 done < filelist.dat
