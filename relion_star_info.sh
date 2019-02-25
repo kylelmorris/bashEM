@@ -42,14 +42,17 @@ awk 'NF < 3' < ${star1} > star1header.dat
 
 #As of relion3 a version header is included in star file, ascertain for reporting and removal
 search=$(grep "# RELION; version" ${star1})
-if [[ -v ${search} ]] ; then
+echo $search
+
+if [[ -z ${search} ]] ; then
   version=$(echo "Pre Relion-3, no version header found...")
+  diff star1header.dat ${star1} | awk '!($1="")' > star1lines.dat
 else
   version=$(echo ${search})
+  diff star1header.dat ${star1} | sed "/${version}/d" | awk '!($1="")' > star1lines.dat
 fi
 
 #Get datalines of star1 and remove blank lines
-diff star1header.dat ${star1} | grep -v "${version}" | awk '!($1="")'> star1lines.dat
 sed '/^\s*$/d' star1lines.dat > tmp.dat
 mv tmp.dat star1lines.dat
 
