@@ -67,3 +67,9 @@ while read p; do
 done < .filelist_${time}.dat
 
 #rm -rf .filelist_${time}.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

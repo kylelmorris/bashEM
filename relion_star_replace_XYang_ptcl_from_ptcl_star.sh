@@ -184,5 +184,9 @@ rm -rf *dat
 # Useful message
 echo "Saved new xyang replaced star file to: star_replaced_xyang.star"
 echo ""
+
+# Finish
+echo ""
 echo "Done!"
+echo "Script written by Kyle Morris"
 echo ""

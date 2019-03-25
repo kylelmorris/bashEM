@@ -92,3 +92,9 @@ open relion_star_plot_all_data.png
 open relion_star_plot_all_dist.png
 eog relion_star_plot_all_data.png &
 eog relion_star_plot_all_dist.png &
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

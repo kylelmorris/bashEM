@@ -169,4 +169,9 @@ echo ''
 echo 'Tidying up...'
 echo 'Created folder with data and plots in current working directory called relion_star_plot_data'
 echo ''
-echo 'Done!'
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -12,3 +12,9 @@ plot "resmapvoxels.dat" with boxes
 EOF
 
 eog resmap.png
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

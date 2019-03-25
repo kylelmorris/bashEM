@@ -159,3 +159,9 @@ ax2.set(ylabel='Frequency percentage')
 g = sns.distplot(CtfMeritDist, kde=True, ax=ax2, color='black')
 #Save plot
 g.figure.savefig("relion_star_plot_CtfFOM_dist.png")
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

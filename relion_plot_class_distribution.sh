@@ -67,3 +67,9 @@ mv class_occupancy.png ${dir}/class_distribution/${name}_class_occupancy.png
 
 eog ${dir}/class_distribution/${name}_class_occupancy.png
 open ${dir}/class_distribution/${name}_class_occupancy.png
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -104,3 +104,9 @@ echo "//////////////////////"
 echo "Motioncorr2 complete"
 echo "Corrected $((i-1)) files"
 echo "//////////////////////"
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

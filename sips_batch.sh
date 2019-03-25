@@ -36,3 +36,9 @@ i=$((i+1))
 done < filelist.dat
 
 rm -rf filelist.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -68,3 +68,9 @@ plot "fsc_half_maps.mtriage.log" using 1:2 title ''.word(labels,1).'' with lines
 EOF
 
 gpicview fsc_plot.mtriage.png &
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

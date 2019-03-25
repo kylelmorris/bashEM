@@ -16,3 +16,9 @@ echo "Made split_mics_defocus.dat containing micrgraphs organised by defocus"
 echo "Introduce spaces where you want your groups to be and then run:"
 echo ""
 echo "relion_make_grouped_star.sh on split_mics_defocus.dat to make your grouped *.star file"
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

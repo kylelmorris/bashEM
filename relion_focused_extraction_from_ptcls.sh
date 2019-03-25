@@ -77,3 +77,9 @@ rm -rf dataedit.star
 rm -rf ptcllines.star
 #name=$(echo "${star//.star}") #parse out .star extension
 mv newstar.star $name"_centre_focus.star"
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

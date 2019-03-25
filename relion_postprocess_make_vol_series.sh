@@ -118,3 +118,9 @@ if [ $p == y ] ; then
 else
   echo "Skipping global and local optimal b-factor sharpening..."
 fi
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

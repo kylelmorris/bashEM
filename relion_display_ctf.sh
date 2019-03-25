@@ -48,3 +48,9 @@ relion_display --i display_ctf_image.mrc --scale $scale
 echo 'Tidying up'
 echo ''
 rm -rf display_ctf_image.mrc
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

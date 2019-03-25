@@ -13,3 +13,9 @@ file=$(basename $map .mrc)
 
 echo "+++ relion_image_handler --i $map --multiply $mask --o ${file}_masked.mrc"
 relion_image_handler --i $map --multiply $mask --o ${file}_masked.mrc
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

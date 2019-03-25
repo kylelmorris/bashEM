@@ -9,12 +9,12 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
- 
+
 # Get the data
 data = pd.read_csv('local_defocus.csv', sep=' ', header=None, names=['X', 'Y', 'Z'])
 
 df=data
- 
+
 # Make the plot surface
 #fig = plt.figure()
 #ax = fig.gca(projection='3d')
@@ -51,3 +51,9 @@ fig.savefig(str(image), dpi=300, transparent=True)
 
 # Show the plot
 plt.show()
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

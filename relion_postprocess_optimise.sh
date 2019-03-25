@@ -44,3 +44,9 @@ while [ "$(bc <<< "$i < $inimax")" == "1" ] ; do
   i=$(bc <<< "$i+$inistep")
 
 done
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

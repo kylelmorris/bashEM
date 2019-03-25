@@ -180,3 +180,9 @@ rm -rf datablock
 rm -rf datablock_ImageName
 rm -rf datablock_data
 rm -rf header
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

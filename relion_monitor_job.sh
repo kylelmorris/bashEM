@@ -30,3 +30,9 @@ if [[ -z $lines ]] ; then
 fi
 
 tail -f -n ${lines} ${jobin}/run.out
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -50,3 +50,9 @@ rm -rf *dat
 # Report back
 echo "Done! Created micrographs.star in current working directory"
 echo ""
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

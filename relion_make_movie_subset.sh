@@ -91,3 +91,9 @@ echo 'Saved new star file containing subset movie particles in:' $star_selected_
 echo ''
 
 fi
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -90,4 +90,9 @@ echo "New magnification:               ${mag}"
 echo "New pixel size:                  ${dstep}"
 apix=$(bc <<< "scale=3; ${dstep}*10000/$mag")
 echo "Calculated magnified pixel size: ${apix}"
+
+# Finish
+echo ""
 echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

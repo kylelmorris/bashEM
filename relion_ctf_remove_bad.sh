@@ -50,3 +50,9 @@ while read p; do
   echo 'Removing micrograph:' $p
   sed -i "/$p/d" $starin
 done < $starctf
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

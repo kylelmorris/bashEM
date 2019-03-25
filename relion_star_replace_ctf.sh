@@ -134,3 +134,9 @@ echo ''
 cat star1header.dat new_lines.dat >> new_star_ctf.star
 
 rm -rf *.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

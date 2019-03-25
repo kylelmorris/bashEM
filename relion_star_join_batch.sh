@@ -124,3 +124,9 @@ echo 'Done!'
 echo ''
 
 rm -rf *.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

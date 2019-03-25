@@ -35,3 +35,9 @@ if [[ -z $1 ]] ; then
 fi
 
 awk '{if (NF > 3) exit; print }' < $starin
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

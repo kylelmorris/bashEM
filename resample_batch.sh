@@ -80,3 +80,9 @@ echo "File conversion complete"
 echo "//////////////////////"
 
 ls -han *.mrc
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

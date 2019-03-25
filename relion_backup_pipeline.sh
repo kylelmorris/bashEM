@@ -34,4 +34,8 @@ echo "Copied all gui settings, default_pipeline.star and .Nodes"
 
 rm -rf backup.com
 
+# Finish
+echo ""
 echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

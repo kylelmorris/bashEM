@@ -54,3 +54,9 @@ echo ''
 echo 'Removed box co-ordinates based on ctf validation score: VALIDATION_SCORE:' $ctf_score
 
 rm -rf box_ctf.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

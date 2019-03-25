@@ -49,3 +49,9 @@ plt.ylabel('Rotation (degrees)')
 
 #save plot
 fig.savefig('run_data_angles.png', dpi=300)
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

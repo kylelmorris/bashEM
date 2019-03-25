@@ -59,3 +59,9 @@ cd ${manualcoords}/
 #find . -depth -name '*autopick*' -execdir bash -c 'for f; do mv -i "$f" "${f//autopick/manualpick}"; done' bash {} +
 
 cd $cwd
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

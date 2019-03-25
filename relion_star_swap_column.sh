@@ -42,3 +42,9 @@ fi
 
 
 awk -v v1=$star1col -v v2=$star2col 'FNR==NR{a[NR]=$v2;next}{$v1=a[FNR]}1' $star2in $star1in
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

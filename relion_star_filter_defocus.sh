@@ -45,5 +45,8 @@ cat star1header.dat star1linesout.dat > $starout
 #Tidy up
 rm -rf *dat
 
-#Report Done
-echo "Done!!"
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

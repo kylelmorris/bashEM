@@ -48,6 +48,8 @@ echo "Softened shell by gaussian masking"
 #relion_image_handler --i shell.mrc --multiply shell_mask.mrc --o shell_soft.mrc
 #echo "Created soft shell reference"
 
+# Finish
 echo ""
 echo "Done!"
-
+echo "Script written by Kyle Morris"
+echo ""

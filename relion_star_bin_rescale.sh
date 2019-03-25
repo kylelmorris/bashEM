@@ -66,4 +66,9 @@ echo 'Searched for:                ' $namein
 echo 'Replaced with:               ' $nameout
 echo 'Star file output:            ' $starout
 echo ''
-echo 'Done!'
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -35,7 +35,7 @@ ls -n *.$ext | grep $suffix | awk {'print $9'} | cat -n > filelist.dat
 
 echo ''
 echo 'Plotting all ctf estimates by lmbgctf from log files'
-echo 'with extension:' $ext 
+echo 'with extension:' $ext
 echo 'and suffix:' $suffix
 echo ''
 echo 'Number of plots to make:' $(wc -l filelist.dat | awk {'print $1'})
@@ -48,7 +48,7 @@ while read p; do
 
 file=$(sed -n $i"p" filelist.dat | awk {'print $2'})
 name=$(basename $file .$ext)
-   
+
 EPAin="$name".$ext
 pngout="$name"".png"
 
@@ -90,3 +90,9 @@ echo "File processing complete"
 echo ""
 echo "You can open .png files with eog (Linux) or open (OS X)"
 echo "//////////////////////////////////////////////////////////"
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -34,4 +34,8 @@ ${remote}
 
 echo ""
 echo "Copied run.out, run.err, note.txt, *.star and final iteration finals"
+# Finish
+echo ""
 echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -54,7 +54,7 @@ for ((i=1; i<=j; i++))
 do
    echo "Processing line:" $i "of" $j
 
-   search=$(sed -n "$i"p movieparts.dat) 
+   search=$(sed -n "$i"p movieparts.dat)
    grep $search $ctfstar | awk {'print $2,$3'} >> ctf.dat
 done
 
@@ -66,3 +66,9 @@ echo '_rlnDefocusV #7 ' >> header.dat
 cat header.dat movieparts_ctf.dat >> movieparts_ctf.star
 
 rm -rf *.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

@@ -77,3 +77,9 @@ eog $pngout
 #plot "plotEPA.dat" using 1:2 title ''.word(labels,1).'' with lines ls 2, \ #CTFsim
 #     "plotEPA.dat" using 1:3 title ''.word(labels,2).'' with lines ls 3, \ #EPA(Ln|F)
 #     "plotEPA.dat" using 1:4 title ''.word(labels,3).''with lines ls 4     #EPA(Ln|F|-Bg)
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

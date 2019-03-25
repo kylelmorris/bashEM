@@ -112,3 +112,9 @@ echo ''
 rm -rf star1header.dat
 rm -rf star1lines.dat
 rm -rf star1line.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

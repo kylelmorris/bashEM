@@ -51,3 +51,9 @@ sed '1d' star1lines.dat > tmp.dat
 awk 'NF' tmp.dat > star1datalines.dat
 
 rm -rf tmp.dat
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

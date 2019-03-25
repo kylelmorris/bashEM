@@ -118,3 +118,9 @@ echo "tail -f ${file}_half1_reconstruct.log"
 echo "tail -f ${file}_half2_reconstruct.log"
 echo ""
 echo "Exiting..."
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

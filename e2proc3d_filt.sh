@@ -7,3 +7,9 @@ do
   e2proc3d.py rctrecon_${j}.hdf rctrecon_${j}_filt.mrc --process=filter.lowpass.gauss:cutoff_abs=0.05
 
 done
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

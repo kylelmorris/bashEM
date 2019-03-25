@@ -147,3 +147,9 @@ open class_occupancy/class_occupancy.png &
 
 # Change back to original working directory
 cd $cwd
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

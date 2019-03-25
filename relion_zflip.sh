@@ -19,3 +19,9 @@ mapout=$(basename $mapin .mrc)
 printf "Making zflip map\n"
 relion_image_handler --i ${mapin} --o ${mapout}_flipZ.mrc --flipZ
 printf "Done!\n"
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

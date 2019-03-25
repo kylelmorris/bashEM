@@ -40,3 +40,9 @@ echo "File processing complete"
 echo "//////////////////////"
 
 ls
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

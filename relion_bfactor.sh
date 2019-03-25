@@ -27,5 +27,8 @@ relion_image_handler --i $mapin --o $mapout --angpix $apix --bfactor $BF
 
 echo ""
 echo "Saved map to file: ${mapout}"
+# Finish
+echo ""
 echo "Done!"
+echo "Script written by Kyle Morris"
 echo ""

@@ -91,3 +91,9 @@ rm -rf relion_fsc.png
 ln -s $starfsc relion_fsc.png
 eog relion_fsc.png
 open relion_fsc.png
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

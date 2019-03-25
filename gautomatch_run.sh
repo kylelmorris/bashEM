@@ -18,3 +18,9 @@ find . -depth -name '*automatch.star*' -execdir bash -c 'for f; do mv -i "$f" "$
 find . -depth -name '*_inv*' -execdir bash -c 'for f; do mv -i "$f" "${f//_inv/}"; done' bash {} +
 cd $dir
 echo "Done!!"
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

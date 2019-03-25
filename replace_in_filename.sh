@@ -47,3 +47,9 @@ read p
 for i in * ; do mv "$i" "${i/${find}/${replace}}" ; done
 #echo "find . -depth -name '*$find*' -execdir bash -c 'for f; do mv -i \"\$f\" \"\${f//$find/$replace}\"; done' bash {} +"
 echo ''
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

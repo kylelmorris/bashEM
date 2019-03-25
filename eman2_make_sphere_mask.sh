@@ -63,6 +63,8 @@ rm -rf volume.hdf
 rm -rf sphere.mrc
 mv sphere_mask.mrc sphere_mask_d${d}A_e${ex}_s${soft}.mrc
 
+# Finish
 echo ""
 echo "Done!"
-
+echo "Script written by Kyle Morris"
+echo ""

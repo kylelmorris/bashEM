@@ -17,3 +17,9 @@ md.removeLabels('rlnPhaseShift')
 md.removeLabels('rlnCtfMaxResolution')
 md.removeLabels('rlnCtfFigureOfMerit')
 md.write(out)
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

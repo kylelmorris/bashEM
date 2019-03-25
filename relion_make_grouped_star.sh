@@ -66,3 +66,9 @@ else
 echo $oldgroupname" has " $ngroup " particles; total number of particles= " $ntot
 rm -rf groups.dat
 fi
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""

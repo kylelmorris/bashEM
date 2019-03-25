@@ -33,3 +33,9 @@ e2proc2d.py projections_${sampling}deg.hdf projections_${sampling}deg_LP${lp}.hd
 
 # Tidy up
 #rm -rf *.hdf
+
+# Finish
+echo ""
+echo "Done!"
+echo "Script written by Kyle Morris"
+echo ""
