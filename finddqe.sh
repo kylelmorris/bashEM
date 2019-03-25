@@ -9,3 +9,5 @@ finddqe << foo
 motioncorr2.mrc
 motioncorr2_finddqe.mrc
 foo
+
+echo "Done!"
