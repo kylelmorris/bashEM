@@ -77,10 +77,11 @@ else
   fi
 fi
 
-## Make a backup of the *model.star and work in this directory
-mkdir -p class_occupancy/model_star_backup
-scp -r *model.star class_occupancy/model_star_backup
-cd class_occupancy/model_star_backup
+mkdir -p class_occupancy
+
+## Make a backup of the *model.star
+#mkdir -p class_occupancy/model_star_backup
+#scp -r *model.star class_occupancy/model_star_backup
 
 ##Extract the class occupancy data from the model.star files
 modelfiles=$(ls *model.star*)
