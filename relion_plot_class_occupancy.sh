@@ -77,22 +77,33 @@ else
   fi
 fi
 
-## Make a backup of the *model.star
+## Make a backup of the *model.star and work in this directory
 mkdir -p class_occupancy/model_star_backup
 scp -r *model.star class_occupancy/model_star_backup
+cd class_occupancy/model_star_backup
 
-##Print the raw class occupancy data to terminal
+##Extract the class occupancy data from the model.star files
+modelfiles=$(ls *model.star*)
 iteration=$(ls *model.star* | wc -l)
 
+# Get first class occupancy data
 relion_star_printtable run_*000_model.star data_model_classes _rlnClassDistribution > classocc.dat
 
-for (( i=1; i<$iteration; i++ ))
-do
-  j=$(printf "%03d" $i)
-  relion_star_printtable run_*"$j"_model.star data_model_classes _rlnClassDistribution > tmpocc.dat
+# Loop through *model files that were found
+while read -r line; do
+  relion_star_printtable $line data_model_classes _rlnClassDistribution > tmpocc.dat
   paste classocc.dat tmpocc.dat > tmpocc_new.dat
   mv tmpocc_new.dat classocc.dat
-done
+done <<< "$modelfiles"
+
+# Old way of looping through model files, doesn't work with non sequential it000, it010, it020
+#for (( i=1; i<$iteration; i++ ))
+#do
+#  j=$(printf "%03d" $i)
+#  relion_star_printtable run_*"$j"_model.star data_model_classes _rlnClassDistribution > tmpocc.dat
+#  paste classocc.dat tmpocc.dat > tmpocc_new.dat
+#  mv tmpocc_new.dat classocc.dat
+#done
 
 # Transpose (http://stackoverflow.com/questions/25062169/using-bash-to-sort-data-horizontally)
 transpose () {
@@ -128,7 +139,18 @@ else
 fi
 
 gnuplot <<- EOF
-set xlabel "3D classification iteration"
+set style line 1 lw 2 lc rgb "#B1B1B1"
+set style line 2 lw 2 lc rgb "#E8E99D"
+set style line 3 lw 2 lc rgb "#B6F5F4"
+set style line 4 lw 2 lc rgb "#BAB8FF"
+set style line 5 lw 2 lc rgb "#F8C1FF"
+set style line 6 lw 2 lc rgb "#EDA8AA"
+set style line 7 lw 2 lc rgb "#A5DF978"
+set style line 8 lw 2 lc rgb "#F2CDA4"
+set style line 9 lw 2 lc rgb "#A2C5EE"
+set style line 10 lw 2 lc rgb "#CBCB94"
+set style increment user
+set xlabel "Iteration"
 set ylabel "Class % ptcl occupancy"
 set xrange [$xlow:$xhigh]
 set key outside
