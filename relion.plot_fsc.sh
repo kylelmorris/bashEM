@@ -42,14 +42,16 @@ echo ''
 
 star=$1
 starbase=$(basename "$star" .star)
-starfsc=$(echo $starbase'_fsc.png')
+starfscall=$(echo $starbase'_fsc_all.png')
+starfsc=$(echo $starbase'_fsc_corrected.png')
 fscdat=$(echo $starbase'_fsc.dat')
+dir=$(dirname $star)
 xlow=$2
 xhigh=$3
-rln4="FSC_Corrected"
-rln5="FSC_UnmaskedMaps"
-rln6="FSC_MaskedMaps"
-rln7="Correcte_FSC_Phase_Randomized_Masked_Maps"
+rln4="Corrected"
+rln5="Unmasked-Maps"
+rln6="Masked-Maps"
+rln7="Phase-Randomized-Maps"
 
 relion_star_printtable $star data_fsc > $fscdat
 
@@ -62,35 +64,62 @@ fscres=$(echo $fsc0p143 | awk '{printf "%2.2f\n",$3}')
 echo "Resolution (FSC 0.143, A):" $fscres
 echo ""
 
+# Plot with all curves and just corrected
 gnuplot <<- EOF
-set xlabel "Resolution (1/Å)"
-set ylabel "FSC"
-set yrange [0:1]
-set xrange [$xlow:$xhigh]
-labels = "$rln4 $rln5 $rln6 $rln7"
-set style line 1 lt 5 lw 1 lc rgb "red"     #Lines
-set style line 2 lt 5 lw 2 lc rgb "navy"    #FSC_corrected
-set style line 3 lt 5 lw 2 lc rgb "orange"     #FSC_UnmaskedMaps
-set style line 4 lt 5 lw 2 lc rgb "red"     #FSC_MaskedMaps
-set style line 5 lt 3 lw 2 lc rgb "black"    #FSC_Phase_Randomised
+set term pngcairo dashed
+set output "${starfscall}"
 
-set term png
-set output "$starfsc"
-set title "FSC plot: $star"
-set label "  $fscres A" at $fscx,$fscy point pointtype 1
+# Coloring as in original phase randomisation paper
+#set style line 1 lt 5 lw 1 lc rgb "red"     #Lines
+#set style line 2 lt 5 lw 2 lc rgb "navy"    #FSC_corrected
+#set style line 3 lt 5 lw 2 lc rgb "orange"  #FSC_UnmaskedMaps
+#set style line 4 lt 5 lw 2 lc rgb "red"     #FSC_MaskedMaps
+#set style line 5 lt 3 lw 2 lc rgb "black"   #FSC_Phase_Randomised
+
+# Coloring as in Relion output
+set style line 1 lt 5 lw 1 lc rgb "orange"  #Lines
+set style line 2 lt 5 lw 2 lc rgb "black"   #FSC_corrected
+set style line 3 lt 5 lw 1 lc rgb "green"   #FSC_UnmaskedMaps
+set style line 4 lt 5 lw 1 lc rgb "blue"    #FSC_MaskedMaps
+set style line 5 lt 3 lw 1 lc rgb "red"     #FSC_Phase_Randomised
+set style line 6 lt 1 lw 1 lc rgb "grey"    #Grid
+
+set xlabel "Resolution (1/Å)"
+set ylabel "Fourier Shell Correlation"
+set yrange [0:1]
+set ytics 0.1
+#set ytics add ("0.143" 0.143)
+set xrange [$xlow:$xhigh]
+set xtics 0.05
+set grid xtics ytics ls 6
+labels = "$rln4 $rln5 $rln6 $rln7"
+
+set title "Final resolution = $fscres Ångstroms"
+#set label "  $fscres A" at $fscx,$fscy point pointtype 1
+set label "" at $fscx,$fscy point pointtype 1
+
 set arrow 1 ls 1 from graph 0,first 0.143 to graph 1,first 0.143 nohead
+set label "0.143" at 0.01,0.163
+
 #plot for [i=4:7] "$fscdat" using 2:i title ''.word(labels, i-3).'' with lines lw 2
 
 plot "$fscdat" using 2:4 title ''.word(labels,1).'' with lines ls 2, \
      "$fscdat" using 2:5 title ''.word(labels,2).'' with lines ls 3, \
      "$fscdat" using 2:6 title ''.word(labels,3).'' with lines ls 4, \
      "$fscdat" using 2:7 title ''.word(labels,4).'' with lines ls 5
+
+set output "${starfsc}"
+
+plot "$fscdat" using 2:4 title ''.word(labels,1).'' with lines ls 2
+
 EOF
 
-rm -rf relion_fsc.png
-ln -s $starfsc relion_fsc.png
-eog relion_fsc.png
-open relion_fsc.png
+mv $starfsc $dir
+mv $starfscall $dir
+mv $fscdat $dir
+
+eog $dir/$starfscall
+open $dir/$starfscall
 
 # Finish
 echo ""

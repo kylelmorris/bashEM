@@ -69,8 +69,9 @@ cat starprinttable.dat | tr -s '[:blank:]' ',' > tmp.dat
 mv tmp.dat starprinttable.dat
 
 #Add header for .csv
-(echo "Micrograph,DefocusU,DefocusV,DefocusA,Astigmatism,CtfFigureOfMerit,CtfMaxResolution,PhaseShift" ; cat starprinttable.dat) > tmp.dat
-mv tmp.dat defocus.csv
+echo "Micrograph,DefocusU,DefocusV,DefocusA,Astigmatism,CtfFigureOfMerit,CtfMaxResolution,PhaseShift" > tmp.dat
+cat tmp.dat starprinttable.dat > tmp2.dat
+mv tmp2.dat defocus.csv
 
 #Tidy up
 #rm -rf starprinttable.dat
