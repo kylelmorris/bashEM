@@ -21,7 +21,6 @@
 #
 ############################################################################
 
-
 echo "*************************************************************************"
 echo "Class occupancy script for Relion, Kyle Morris University of California Berkeley 2016"
 echo ""
@@ -77,18 +76,23 @@ else
   fi
 fi
 
-mkdir -p class_occupancy
-
-## Make a backup of the *model.star
-#mkdir -p class_occupancy/model_star_backup
-#scp -r *model.star class_occupancy/model_star_backup
+## Make a backup of the *model.star to plot from, remove rln continue
+mkdir -p class_occupancy/model_files
+scp -r *model.star class_occupancy/model_files
+cd class_occupancy/model_files
+#Remove rln continue info
+for f in *model.star ; do
+  new="${f#*_it}"
+  mv ${f} ${new}
+done
 
 ##Extract the class occupancy data from the model.star files
+
 modelfiles=$(ls *model.star*)
 iteration=$(ls *model.star* | wc -l)
 
 # Get first class occupancy data
-relion_star_printtable run_*000_model.star data_model_classes _rlnClassDistribution > classocc.dat
+relion_star_printtable 000_model.star data_model_classes _rlnClassDistribution > classocc.dat
 
 # Loop through *model files that were found
 while read -r line; do
@@ -161,12 +165,11 @@ set output "class_occupancy.png"
 plot for [i=$classfirst:$classlast] "class_occupancy.dat" using i title 'class' .i $lines
 EOF
 
-mv class_occupancy.dat class_occupancy
-mv class_occupancy.png class_occupancy
-mv classocc.dat class_occupancy
+mv class_occupancy.png ..
+cd ..
 
-eog class_occupancy/class_occupancy.png &
-open class_occupancy/class_occupancy.png &
+eog class_occupancy.png &
+open class_occupancy.png &
 
 # Change back to original working directory
 cd $cwd
