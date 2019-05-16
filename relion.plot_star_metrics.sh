@@ -78,7 +78,7 @@ mv tmp2.dat defocus.csv
 #rm -rf defocus.dat
 
 #Run python plotting script
-relion_plot_star_metrics.py
+relion.plot_star_metrics.py
 
 #Move plots
 file=$(basename $starin .star)
