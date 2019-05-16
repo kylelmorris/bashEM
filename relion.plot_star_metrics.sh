@@ -3,6 +3,11 @@
 
 starin=$1
 
+# Get input dir, path and ext and report
+dir=$(dirname $starin)
+name=${starin%.*}
+ext=${starin#$name.}
+
 if [[ -z $1 ]] ; then
   echo ""
   echo "Variables empty, usage is relion_star_plot.sh (1)"
@@ -82,10 +87,12 @@ relion.plot_star_metrics.py
 
 #Move plots
 file=$(basename $starin .star)
-dir=$(echo "${file}_plots")
-mkdir $dir
-mv relion_star_plot* $dir
-mv defocus.csv $dir
+output=$(echo "${file}_plots")
+mkdir $output
+mv relion_star_plot* $output
+mv defocus.csv $output
+
+mv ${output} ${dir}
 
 #Open plots
 cd $dir
