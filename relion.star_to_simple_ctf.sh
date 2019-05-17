@@ -40,7 +40,7 @@ starin=$1
 name=$(basename $starin .star)
 out=$name
 outdir=$2
-simpledir="./Simple/Extract"
+simpledir="Simple/Extract"
 
 ###############################################################################
 # Are dependancies present?
@@ -120,7 +120,7 @@ cs1=$(cat $starin | grep -v "# RELION" | awk -v c1="$cscol1" 'BEGIN {i=1} {if (N
 amp1=$(cat $starin | grep -v "# RELION" | awk -v c1="$ampcol1" 'BEGIN {i=1} {if (NF<3) {i++} else {print $c1}}' | head -n 1)
 dstep=$(cat $starin | grep -v "# RELION" | awk -v c1="$dstepcol1" 'BEGIN {i=1} {if (NF<3) {i++} else {print $c1}}' | head -n 1)
 mag=$(cat $starin | grep -v "# RELION" | awk -v c1="$magcol1" 'BEGIN {i=1} {if (NF<3) {i++} else {print $c1}}' | head -n 1)
-ptclno=$(wc -l ${simpledir}/${outdir}/deftab.txt | awk {'print $1'})
+ptclno=$(wc -l simple/deftab.txt | awk {'print $1'})
 
 # Calculate pixel size
 apix=$(bc <<< "scale=3; ${dstep}*10000/${mag}")
@@ -144,10 +144,16 @@ echo "Ptcl no: ${ptclno}" >> ${simpledir}/${outdir}/.params.dat
 ## Use relion to create a single stack of the particles
 echo "Using Relion to create a single stack with and without phase flipping..."
 echo ""
-relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles_pflip --premultiply_ctf --phase_flip
+
+preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles_pflip --premultiply_ctf --phase_flip"
+echo "+++ ${preprocess_com}"
+eval ${preprocess_com}
 echo "Created phase flipped particles..."
 echo ""
-relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles
+
+preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles"
+echo "+++ ${preprocess_com}"
+eval ${preprocess_com}
 echo "Created normal particles..."
 echo ""
 #relion_stack_create --i ${starin} --o simple/${name}
