@@ -145,16 +145,16 @@ echo "Ptcl no: ${ptclno}" >> ${simpledir}/${outdir}/.params.dat
 echo "Using Relion to create a single stack with and without phase flipping..."
 echo ""
 
-preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles_pflip --premultiply_ctf --phase_flip"
-echo "+++ ${preprocess_com}"
-eval ${preprocess_com}
-echo "Created phase flipped particles..."
-echo ""
-
 preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles"
 echo "+++ ${preprocess_com}"
 eval ${preprocess_com}
 echo "Created normal particles..."
+echo ""
+
+preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles_pflip --premultiply_ctf --phase_flip"
+echo "+++ ${preprocess_com}"
+eval ${preprocess_com}
+echo "Created phase flipped particles..."
 echo ""
 #relion_stack_create --i ${starin} --o simple/${name}
 
