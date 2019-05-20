@@ -48,17 +48,23 @@ elif [[ -z $2 ]]; then
 fi
 xhigh=$(wc -l classocc.dat | awk {'print $1'})
 
-# Plot data
+#format
+cat -n classocc.dat > tmp.dat
+mv tmp.dat classocc.dat
 
+# Plot data
 gnuplot <<- EOF
 set xlabel "Class number"
 set ylabel "Class % ptcl occupancy"
-set xrange [-3:$xhigh]
+set xrange [-0.5:]
+set xtics 1
 set key outside
 set term png size 900,400
-set size ratio 0.6
+#set size ratio 0.25
+set style fill solid 0.66 border
+set boxwidth 0.95
 set output "class_occupancy.png"
-plot "classocc.dat" with boxes
+plot "classocc.dat" using 1:2 with boxes
 EOF
 
 # Tidy up and show plot
