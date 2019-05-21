@@ -40,7 +40,6 @@ starin=$1
 name=$(basename $starin .star)
 out=$name
 outdir=$2
-simpledir="Simple/Extract"
 
 ###############################################################################
 # Are dependancies present?
@@ -98,9 +97,9 @@ echo "rlnAmplitudeContrast:    ${ampcol1}"
 echo ""
 
 ## Create new directory for creating simple file in
-mkdir -p ${simpledir}/${outdir}
+mkdir -p ${outdir}
 echo "Created directory for simple file output..."
-echo "${simpledir}/${outdir}"
+echo "${outdir}"
 
 ## Get defocusU/V and astig columns without the header of the star file and place in simple formatted ctf params file
 # Note that as of Relion-3.0 version header needs removing
@@ -110,7 +109,7 @@ cat $starin | grep -v "# RELION" | awk \
 'BEGIN {i=1} {if (NF<3) {i++} else {print "kv="$c1,"cs="$c2,"fraca="$c3,"dfx="$c4/10000,"dfy="$c5/10000,"angast="$11}}' > deftab.txt
 ptclno=$(wc -l deftab.txt | awk '{print $1}')
 
-mv deftab.txt ${simpledir}/${outdir}
+mv deftab.txt ${outdir}
 echo "Created Simple formatted deftab.txt in output directory"
 echo ""
 
@@ -134,24 +133,24 @@ echo "Ptcl no: ${ptclno}"
 echo ""
 
 ## Save a useful file to pull info from
-echo "Simple parameters" > ${simpledir}/${outdir}/.params.dat
-echo "Voltage: ${kv1}" >> ${simpledir}/${outdir}/.params.dat
-echo "Cs (mm): ${cs1}" >> ${simpledir}/${outdir}/.params.dat
-echo "AmpC:    ${amp1}" >> ${simpledir}/${outdir}/.params.dat
-echo "Apix:    ${apix}" >> ${simpledir}/${outdir}/.params.dat
-echo "Ptcl no: ${ptclno}" >> ${simpledir}/${outdir}/.params.dat
+echo "Simple parameters" > ${outdir}/.params.dat
+echo "Voltage: ${kv1}" >> ${outdir}/.params.dat
+echo "Cs (mm): ${cs1}" >> ${outdir}/.params.dat
+echo "AmpC:    ${amp1}" >> ${outdir}/.params.dat
+echo "Apix:    ${apix}" >> ${outdir}/.params.dat
+echo "Ptcl no: ${ptclno}" >> ${outdir}/.params.dat
 
 ## Use relion to create a single stack of the particles
 echo "Using Relion to create a single stack with and without phase flipping..."
 echo ""
 
-preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles"
+preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${outdir}/particles"
 echo "+++ ${preprocess_com}"
 eval ${preprocess_com}
 echo "Created normal particles..."
 echo ""
 
-preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${simpledir}/${outdir}/particles_pflip --premultiply_ctf --phase_flip"
+preprocess_com="relion_preprocess --operate_on ${starin} --reextract_data_star --operate_out ${outdir}/particles_pflip --premultiply_ctf --phase_flip"
 echo "+++ ${preprocess_com}"
 eval ${preprocess_com}
 echo "Created phase flipped particles..."
