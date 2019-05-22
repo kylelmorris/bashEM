@@ -48,7 +48,7 @@ rm -rf ${dir}/${output}/${name}_model_datalines.star
 echo data_ > ${dir}/${output}/${name}_data.star
 
 # Allow user to select images from stack using relion_display
-relion_display --gui --i ${dir}/${output}/${name}_model.star --allow_save --fn_imgs ${dir}/${output}/stack_selection.star --recenter
+relion_display --gui --i ${dir}/${output}/${name}_model.star --allow_save --fn_imgs ${dir}/${output}/${name}_selected.star --recenter
 
 # Finish
 echo ""
