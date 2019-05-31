@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 
-dirin=$1
+dir=$1
 dirout=$2
 port=$3
 
@@ -20,6 +20,11 @@ fi
 if [[ -z $3 ]] ; then
   port=22
 fi
+
+# Get directory full path
+cwd=$(pwd)
+dirin=$(cd ${dir}; pwd -P)
+cd ${cwd}
 
 # Directory and folder names
 ext=$(echo ${dirin##*.})
