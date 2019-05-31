@@ -62,9 +62,9 @@ echo ""
 printf "Making map with auto BF sharpening\n"
 relion_image_handler --i ${mapout}_BF-0A.mrc --o ${mapout}_BF${autobf}A.mrc --angpix $apix --bfactor ${bf}
 printf "Making map structure factors with auto BF sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF${autobf}A.mrc out=${mapout}_BF${autobf}A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF${autobf}A.mrc output_file_name=${mapout}_BF${autobf}A.mtz d_min=${dmin}
 printf "Making map structure factors with auto BF sharpening\n"
-phenix.map_to_structure_factors postprocess_masked.mrc out=postprocess_masked.mtz d_min=${dmin}
+phenix.map_to_structure_factors postprocess_masked.mrc output_file_name=postprocess_masked.mtz d_min=${dmin}
 
 echo ""
 echo "Applying systematic b-factors of -50, -100, -150 and -250..."
@@ -84,17 +84,17 @@ relion_image_handler --i ${mapout}_BF-0A.mrc --o ${mapout}_BF-250A.mrc --angpix 
 
 # Make mtz structure factor files
 printf "Making map structure factors with -0A sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF-0A.mrc out=${mapout}_BF-0A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF-0A.mrc output_file_name=${mapout}_BF-0A.mtz d_min=${dmin}
 printf "Making map structure factors with -50A sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF-50A.mrc out=${mapout}_BF-50A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF-50A.mrc output_file_name=${mapout}_BF-50A.mtz d_min=${dmin}
 printf "Making map structure factors with -100A sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF-100A.mrc out=${mapout}_BF-100A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF-100A.mrc output_file_name=${mapout}_BF-100A.mtz d_min=${dmin}
 printf "Making map structure factors with -150A sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF-150A.mrc out=${mapout}_BF-150A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF-150A.mrc output_file_name=${mapout}_BF-150A.mtz d_min=${dmin}
 printf "Making map structure factors with -200A sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF-200A.mrc out=${mapout}_BF-200A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF-200A.mrc output_file_name=${mapout}_BF-200A.mtz d_min=${dmin}
 printf "Making map structure factors with -250A sharpening\n"
-phenix.map_to_structure_factors ${mapout}_BF-250A.mrc out=${mapout}_BF-250A.mtz d_min=${dmin}
+phenix.map_to_structure_factors ${mapout}_BF-250A.mrc output_file_name=${mapout}_BF-250A.mtz d_min=${dmin}
 
 # relion_postprocess_make_mtz.out
 echo "relion_postprocess_make_vol_series paramters" > relion_postprocess_make_vol_series.out

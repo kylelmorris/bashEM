@@ -21,15 +21,41 @@ if [[ -z $3 ]] ; then
   port=22
 fi
 
+# Directory and folder names
+ext=$(echo ${dirin##*.})
+name=$(basename $dirin .${ext})
+dir=$(dirname $dirin)
+rlnpath=$(echo $dirin | sed -n -e 's/^.*Relion//p')
+
+#Report what's going to happen
+echo ''
+echo '#########################################################################'
+echo ''
+echo 'Refine3D directory to be backed up:'
+echo ${dirin}
+echo ''
+echo 'Backup location is:'
+echo ${dirout}
+echo ''
+echo 'The following directory structure will be created:'
+echo ${dirout}/Relion${rlnpath}
+echo ''
+echo '#########################################################################'
+echo ''
+echo 'Hit Enter to continue or ctrl-c to quit...'
+read p
+
 #Write a README to the backup location with the original location of the files
 echo "host information:" > $dirin/README
 hostname -s >> $dirin/README
-hostname -I >> $dirin/README
 echo "" >> $dirin/README
-echo "Refine3D location" >> $dirin/README
-echo $(ls -d -1 $PWD/$dirin) >> $dirin/README
+echo "Refine3D location:" >> $dirin/README
+echo $(ls -d -1 $dirin) >> $dirin/README
 echo "" >> $dirin/README
 cat $dirin/note.txt >> $dirin/README
+
+#Set up directory on remote end
+mkdir -p ${dirout}/Relion${rlnpath}
 
 #Copy files from specified Refine3D directory to backup location
 #rsync -aP --rsh=\'ssh -p ${port}\' $dirin/run.job \
@@ -46,7 +72,7 @@ $dirin/run_half2_class001_unfil.mrc \
 $dirin/*pipeline* \
 $dirin/note.txt \
 $dirin/README \
-$dirout
+${dirout}/Relion/${rlnpath}
 
 rm -rf $dirin/README
 
