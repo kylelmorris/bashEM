@@ -115,6 +115,7 @@ while read p; do
     #$motioncor2exe -InMrc $orig -OutMrc $new -Iter 10 -Tol 0.5 -Throw 2 -PixSize $apix
 
     #For patch alignment, dose weighting, fourier binning of superres, and grouping for higher S/N
+    echo ">>> ${motioncor2exe} ${type} ${orig} -OutMrc ${new} -Patch 5 5 -Iter 10 -Tol 0.5 -Throw 2 -kV 300 -PixSize $apix -FmDose $dose -FtBin ${bin} -Group 3"
     ${motioncor2exe} ${type} ${orig} -OutMrc ${new} -Patch 5 5 -Iter 10 -Tol 0.5 -Throw 2 -kV 300 -PixSize $apix -FmDose $dose -FtBin ${bin} -Group 3
    fi
 
