@@ -50,7 +50,7 @@ motioncor2exe=$(which motioncor2)
 
 echo "Motioncor2 exe: "$motioncor2exe
 
-if [[ -z $rlnexe ]] ; then
+if [[ -z $motioncor2exe ]] ; then
   echo "Motioncor2 appears not to be installed or sourced..."
   echo "Exiting"
   exit
