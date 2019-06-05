@@ -23,13 +23,14 @@
 
 if [[ -z $1 ]] ; then
   echo ""
-  echo "Variables empty, usage is $0 (1) (2) (3) (4) (5)"
+  echo "Variables empty, usage is $0 (1) (2) (3) (4) (5) (6)"
   echo ""
   echo "(1) = apix (A/pix)"
   echo "(2) = dose (e/A/sec)"
   echo "(3) = frames directory"
   echo "(4) = input extension (i.e. tif)"
   echo "(5) = output extension (i.e. mrc)"
+  echo "(6) = fourier binning amount"
   echo ""
 
   exit
@@ -43,7 +44,27 @@ ext=$4
 ext2=$5
 suffix="cor2"
 
-motioncor2exe="/usr/local/software/bin/motioncor2"
+bin=$6
+
+motioncor2exe=$(which motioncor2)
+
+if [[ -z $rlnexe ]] ; then
+  echo "Motioncor2 appears not to be installed or sourced..."
+  echo "Exiting"
+  exit
+fi
+
+# Test for mrc input
+intype=$(echo $ext | grep mrc)
+if [[ -z ${intype} ]] ; then
+  type="-InMrc"
+fi
+
+# Test for tiff input
+intype=$(echo $ext | grep tif)
+if [[ -z ${intype} ]] ; then
+  type="-InTiff"
+fi
 
 echo '##############################################################################'
 echo 'Usage - motioncor2_run.sh apix dose frame_directory input.ext output.ext'
@@ -92,7 +113,7 @@ while read p; do
     #$motioncor2exe -InMrc $orig -OutMrc $new -Iter 10 -Tol 0.5 -Throw 2 -PixSize $apix
 
     #For patch alignment, dose weighting, fourier binning of superres, and grouping for higher S/N
-    ${motioncor2exe} -InTiff ${orig} -OutMrc ${new} -Patch 5 5 -Iter 10 -Tol 0.5 -Throw 2 -kV 300 -PixSize $apix -FmDose $dose -FtBin 2.0 -Group 3
+    ${motioncor2exe} ${type} ${orig} -OutMrc ${new} -Patch 5 5 -Iter 10 -Tol 0.5 -Throw 2 -kV 300 -PixSize $apix -FmDose $dose -FtBin ${bin} -Group 3
    fi
 
    i=$((i+1))
