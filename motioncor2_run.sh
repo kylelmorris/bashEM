@@ -48,6 +48,8 @@ bin=$6
 
 motioncor2exe=$(which motioncor2)
 
+echo "Motioncor2 exe: "$motioncor2exe
+
 if [[ -z $rlnexe ]] ; then
   echo "Motioncor2 appears not to be installed or sourced..."
   echo "Exiting"
