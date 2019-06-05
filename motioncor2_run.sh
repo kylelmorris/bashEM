@@ -58,14 +58,14 @@ fi
 
 # Test for mrc input
 intype=$(echo $ext | grep mrc)
-if [[ -z ${intype} ]] ; then
-  type="-InTiff"
+if [[ ${intype} == "mrc" ]] ; then
+  type="-InMrc"
 fi
 
 # Test for tiff input
 intype=$(echo $ext | grep tif)
-if [[ -z ${intype} ]] ; then
-  type="-InMrc"
+if [[ ${intype} == "tif" ]] ; then
+  type="-InTiff"
 fi
 
 echo '##############################################################################'
