@@ -56,16 +56,14 @@ if [[ -z $motioncor2exe ]] ; then
   exit
 fi
 
-# Test for mrc input
-intype=$(echo $ext | grep mrc)
-if [[ ${intype} == "mrc" ]] ; then
+# Test for input
+if [[ $(echo $ext | grep mrc) == "mrc" ]] ; then
   type="-InMrc"
-fi
-
-# Test for tiff input
-intype=$(echo $ext | grep tif)
-if [[ ${intype} == "tif" ]] ; then
+elif [[ $(echo $ext | grep mrc) == "tif" ]] ; then
   type="-InTiff"
+else
+  echo "Input format not recognised, exiting..."
+  exit
 fi
 
 echo '##############################################################################'
