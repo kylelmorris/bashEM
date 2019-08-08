@@ -26,8 +26,22 @@ if [[ -z $1 ]] ; then
   exit
 fi
 
-grep "local resolution= " $star | awk '{print $9}' | sort > $dir/$fscdat
+# -V makes it sort numerically
+grep "local resolution= " $star | awk '{print $9}' | sort -V > $dir/$fscdat
 
+# Get high and low resolutions, filter out e+01 numbers
+high=$(cat $dir/$fscdat | grep -v + | head -n 1)
+low=$(cat $dir/$fscdat | grep -v + | tail -n 1)
+
+# Report high and low resolution
+echo ""
+echo "Highest resolution (Å): ${high}"
+echo "Lowest resolution (Å):  ${low}"
+echo ""
+echo "Plotting data..."
+echo ""
+
+# Plotting
 gnuplot <<- EOF
 set term png
 set output "$dir/$starfsc"

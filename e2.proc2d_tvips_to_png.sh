@@ -14,3 +14,9 @@ read p
 module load eman2
 
 e2proc2d.py *.tif @.png --fouriershrink ${bin} --fixintscaling sane --outmode int8
+
+mkdir tif
+mkdir png
+
+mv *tif tif
+mv *png png
