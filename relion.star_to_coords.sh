@@ -61,6 +61,12 @@ else
   mkdir ${outdir}
 fi
 
+# Tidy up from previous execution
+rm -rf .star1header.dat
+
+#Get header of star1
+awk 'NF < 3' < ${starin} > .star1header.dat
+
 #As of relion3 a version header is included in star file, ascertain for reporting and removal
 search=$(grep "# RELION; version" ${starin})
 
@@ -157,6 +163,10 @@ echo 'Number of unique micrographs in star file:     ' $miclines
 echo ''
 echo 'Particles per micrograph in star file:         ' $ptclpermic
 echo '###############################################################'
+
+# Tidy up
+rm -rf .star1*
+rm -rf .coord_header*
 
 # Finish
 echo ""
