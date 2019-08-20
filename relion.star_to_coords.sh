@@ -22,15 +22,17 @@
 ############################################################################
 
 starin=$1
+outdir=$2
 
 if [[ -z $1 ]] ; then
 
   echo ""
   echo "Variables empty, usage is: "
   echo ""
-  echo "$(basename $0) (1)"
+  echo "$(basename $0) (1) (2)"
   echo ""
   echo "(1) = Input star file"
+  echo "(2) = Output directory (optional)"
   echo ""
   exit
 
@@ -50,6 +52,14 @@ fi
 ext=$(echo ${starin##*.})
 name=$(basename $starin .${ext})
 dir=$(dirname $starin)
+
+# Set up for output of coordinate files
+if [[ -z $outdir ]] ; then
+  mkdir ${dir}/coordinates
+  outdir=${dir}/coordinates
+else
+  mkdir ${outdir}
+fi
 
 #As of relion3 a version header is included in star file, ascertain for reporting and removal
 search=$(grep "# RELION; version" ${starin})
@@ -133,7 +143,7 @@ while read p ; do
   #Pull star file data lines containing current micrograph
   grep $p .star1lines.dat | awk -v OFS='\t' -v pickx=${column1} -v picky=${column2} -v psi=${column3} -v class=${column4} -v FOM=${column5} '{print $pickx,$picky,$psi,$class,$FOM}' > .coorddata.star
   #Combine coordinate header with coordinate data for this micrograph
-  cat .coord_header.star .coorddata.star > ${name}_manualpick.star
+  cat .coord_header.star .coorddata.star > ${outdir}/${name}_manualpick.star
 done < .miclines.dat
 
 echo '###############################################################'
