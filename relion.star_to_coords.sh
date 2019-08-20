@@ -4,7 +4,7 @@
 ############################################################################
 #
 # Author: "Kyle L. Morris"
-# University of Warwick 2016
+# MRC LMS 2019
 #
 # This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -53,6 +53,13 @@ ext=$(echo ${starin##*.})
 name=$(basename $starin .${ext})
 dir=$(dirname $starin)
 
+# Error handling on input
+if [[ -z $ext ]] ; then
+  echo 'Input star file is lacking extension...'
+  echo 'Exiting, check input...'
+  exit
+fi
+
 # Set up for output of coordinate files
 if [[ -z $outdir ]] ; then
   mkdir ${dir}/coordinates
@@ -60,9 +67,6 @@ if [[ -z $outdir ]] ; then
 else
   mkdir ${outdir}
 fi
-
-# Tidy up from previous execution
-rm -rf .star1header.dat
 
 #Get header of star1
 awk 'NF < 3' < ${starin} > .star1header.dat
@@ -166,7 +170,7 @@ echo '###############################################################'
 
 # Tidy up
 rm -rf .star1*
-rm -rf .coord_header*
+rm -rf .coord*
 
 # Finish
 echo ""
