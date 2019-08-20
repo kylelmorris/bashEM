@@ -38,6 +38,14 @@ if [[ -z $1 ]] ; then
 
 fi
 
+# Error handling on input
+if [[ -z $(echo $starin | grep star) ]] ; then
+  echo 'Input star file is lacking star file extension...'
+  echo 'Exiting, check input...'
+  echo ''
+  exit
+fi
+
 # Test if star file is present
 if [[ -e $starin ]] ; then
   echo 'Star file found...'
@@ -53,19 +61,12 @@ ext=$(echo ${starin##*.})
 name=$(basename $starin .${ext})
 dir=$(dirname $starin)
 
-# Error handling on input
-if [[ -z $ext ]] ; then
-  echo 'Input star file is lacking extension...'
-  echo 'Exiting, check input...'
-  exit
-fi
-
 # Set up for output of coordinate files
 if [[ -z $outdir ]] ; then
-  mkdir ${dir}/coordinates
+  mkdir -p ${dir}/coordinates
   outdir=${dir}/coordinates
 else
-  mkdir ${outdir}
+  mkdir -p ${outdir}
 fi
 
 #Get header of star1
@@ -109,9 +110,6 @@ coord4=rlnClassNumber
 coord5=rlnAutopickFigureOfMerit
 
 #Get column number in star file
-echo ''
-echo 'star file in:                ' $starin
-echo ''
 column1=$(grep ${coord1} ${starin} | awk '{print $2}' | sed 's/#//g')
 columnname1=$(grep ${coord1} ${starin} | awk '{print $1}' | sed 's/#//g')
 column2=$(grep ${coord2} ${starin} | awk '{print $2}' | sed 's/#//g')
@@ -122,17 +120,17 @@ column4=$(grep ${coord4} ${starin} | awk '{print $2}' | sed 's/#//g')
 columnname4=$(grep ${coord4} ${starin} | awk '{print $1}' | sed 's/#//g')
 column5=$(grep ${coord5} ${starin} | awk '{print $2}' | sed 's/#//g')
 columnname5=$(grep ${coord5} ${starin} | awk '{print $1}' | sed 's/#//g')
-echo 'Column name to plot:         ' $columnname1
-echo "Column number:                #${column1}"
-echo 'Column name to plot:         ' $columnname2
-echo "Column number:                #${column2}"
-echo 'Column name to plot:         ' $columnname3
-echo "Column number:                #${column3}"
-echo 'Column name to plot:         ' $columnname4
-echo "Column number:                #${column4}"
-echo 'Column name to plot:         ' $columnname5
-echo "Column number:                #${column5}"
-echo ''
+#echo 'Column name to plot:         ' $columnname1
+#echo "Column number:                #${column1}"
+#echo 'Column name to plot:         ' $columnname2
+#echo "Column number:                #${column2}"
+#echo 'Column name to plot:         ' $columnname3
+#echo "Column number:                #${column3}"
+#echo 'Column name to plot:         ' $columnname4
+#echo "Column number:                #${column4}"
+#echo 'Column name to plot:         ' $columnname5
+#echo "Column number:                #${column5}"
+#echo ''
 
 #Set up header for coordinates star files
 echo "" > .coord_header.star
@@ -166,6 +164,8 @@ echo ''
 echo 'Number of unique micrographs in star file:     ' $miclines
 echo ''
 echo 'Particles per micrograph in star file:         ' $ptclpermic
+echo ''
+echo 'Individual coordinate star file output:        ' ${outdir}
 echo '###############################################################'
 
 # Tidy up
