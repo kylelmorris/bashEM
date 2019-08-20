@@ -45,9 +45,24 @@ ext=$(echo ${half1##*.})
 name=$(basename $half1 .${ext})
 dir=$(dirname $half1)
 
+# Output setup
+note="${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_note.txt"
+
 # Save the command
-echo "relion_postprocess --i ${half1} --i2 ${half2} --angpix ${apix} --auto_mask --inimask_threshold ${ini} --extend_inimask ${inie} --width_mask_edge ${inis} --mtf ${MTF} --auto_bfac --o ${outdir}/postprocess_ini${ini}_e${inie}_s${inis} ${optional}" > ${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_note.txt
-echo "" >> ${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_note.txt
+echo "${0} script inputs:" > ${note}
+echo "half map 1: ${half1}" >> ${note}
+echo "half map 2: ${half2}" >> ${note}
+echo "apix: ${apix}" >> ${note}
+echo "inimask threshold: ${ini}" >> ${note}
+echo "inimask extend (px): ${inie}" >> ${note}
+echo "inimask soften (px): ${inis}" >> ${note}
+echo "MTF star file: ${MTF}" >> ${note}
+echo "Output directory: ${outdir}" >> ${note}
+echo "additional commands: ${optional}" >> ${note}
+echo "" >> ${note}
+
+echo "relion_postprocess --i ${half1} --i2 ${half2} --angpix ${apix} --auto_mask --inimask_threshold ${ini} --extend_inimask ${inie} --width_mask_edge ${inis} --mtf ${MTF} --auto_bfac --o ${outdir}/postprocess_ini${ini}_e${inie}_s${inis} ${optional}" >> ${note}
+echo "" >> ${note}
 
 echo "Postprocessing running, be patient..."
 
@@ -67,7 +82,7 @@ echo "Resolution: ${res}"
 phenix.map_to_structure_factors "${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_masked.mrc" "output_file_name=${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_masked.mtz" "d_min=${res}"
 
 # Save the command
-echo "phenix.map_to_structure_factors ${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_masked.mrc output_file_name=${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_masked.mtz d_min=${res}" >> ${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_note.txt
+echo "phenix.map_to_structure_factors ${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_masked.mrc output_file_name=${outdir}/postprocess_ini${ini}_e${inie}_s${inis}_masked.mtz d_min=${res}" >> ${note}
 echo "" >> ${outdir}/postprocess_ini${ini}_e${inie}_s${inis}.out
 
 # Create a coot script for manual resampling

@@ -26,7 +26,9 @@ star1=$1
 if [[ -z $1 ]] ; then
 
   echo ""
-  echo "Variables empty, usage is relion_star_info.sh (1)"
+  echo "Variables empty, usage is: "
+  echo ""
+  echo "$(basename $0) (1)"
   echo ""
   echo "(1) = Input star file"
   echo ""
@@ -52,7 +54,6 @@ awk 'NF < 3' < ${star1} > .star1header.dat
 
 #As of relion3 a version header is included in star file, ascertain for reporting and removal
 search=$(grep "# RELION; version" ${star1})
-echo $search
 
 if [[ -z ${search} ]] ; then
   version=$(echo "No Relion version header found...")
@@ -63,12 +64,12 @@ else
 fi
 
 #Get datalines of star1 and remove blank lines
-sed '/^\s*$/d' .star1lines.dat > tmp.dat
-mv tmp.dat .star1lines.dat
+sed '/^\s*$/d' .star1lines.dat > .tmp.dat
+mv .tmp.dat .star1lines.dat
 
 #Get single line of star1 for certain calculations
-sed -n '1p' .star1lines.dat > tmp.dat
-mv tmp.dat .star1line.dat
+sed -n '1p' .star1lines.dat > .tmp.dat
+mv .tmp.dat .star1line.dat
 
 #Calculate number of particles by data lines minus header
 totallines=$(wc -l $star1 | awk {'print $1'})
@@ -133,7 +134,6 @@ mindf=$(bc <<< "scale=0; ${temp}/10")
 temp=$(awk -v column=$column '{print $column}' .star1lines.dat | sort -n | tail -n 1)
 maxdf=$(bc <<< "scale=0; ${temp}/10")
 
-echo ''
 echo '###############################################################'
 echo 'File:           ' $star1
 echo 'Relion version: ' $version
@@ -157,7 +157,6 @@ echo ''
 echo 'Minimum defocus (nm):                          ' $mindf
 echo 'Maximum defocus (nm):                          ' $maxdf
 echo '##############################################################'
-echo ''
 
 rm -rf .star1header.dat
 rm -rf .star1lines.dat
