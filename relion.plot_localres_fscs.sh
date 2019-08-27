@@ -51,5 +51,5 @@ cd locres_fscs
 rm -rf relion_locres_fsc_.star
 
 ## report command that can be used for plotting
-ehco "You can use the following to plot all fsc curves individually"
+echo "You can use the following to plot all fsc curves individually"
 echo "for f in *star; do relion.plot_fsc.sh $f ; done"

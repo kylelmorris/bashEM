@@ -21,14 +21,19 @@
 #
 ############################################################################
 
+# Test if Relion is sourced and available
+command -v relion >/dev/null 2>&1 || { echo >&2 "Relion does not appear to be installed or loaded..."; exit 1; }
+
+# Test for correct variable entry
 if [[ -z $1 ]] ; then
 
   echo ""
-  echo "Variables empty, usage is relion_fsc (1) (2) (3)"
+  echo "Variables empty, usage is $(basename $0) (1) (2) (3) (4)"
   echo ""
   echo "(1) = Post-processing star file"
-  echo "(2) = x-axis low (optional)"
-  echo "(3) = x-axis high (optional)"
+  echo "(2) = Show plot (0/1, optional)"
+  echo "(3) = x-axis low (optional)"
+  echo "(4) = x-axis high (optional)"
   echo ""
 
   exit
@@ -46,8 +51,10 @@ starfscall=$(echo $starbase'_fsc_all.png')
 starfsc=$(echo $starbase'_fsc_corrected.png')
 fscdat=$(echo $starbase'_fsc.dat')
 dir=$(dirname $star)
-xlow=$2
-xhigh=$3
+showplot=$2
+xlow=$3
+xhigh=$4
+
 rln4="Corrected"
 rln5="Unmasked-Maps"
 rln6="Masked-Maps"
@@ -118,8 +125,15 @@ mv $starfsc $dir
 mv $starfscall $dir
 mv $fscdat $dir
 
-eog $dir/$starfscall
-open $dir/$starfscall
+# Show plots depending on user input
+if [[ $showplot == 1 ]]; then
+  eog $dir/$starfscall
+  open $dir/$starfscall
+elif [[ $showplot == 0 ]]; then
+  echo 'Supressing plot output'
+else
+  echo 'Show plots flag not declared, displaying anyway...'
+fi
 
 # Finish
 echo ""
