@@ -4,7 +4,7 @@
 #threshold=0.33
 
 echo "------------------------------------------------------------------"
-echo "relion_star_data_plot.sh"
+echo "$(basename $0)"
 echo "------------------------------------------------------------------"
 echo "-i - input star file (required)"
 echo "-x - xrange for plotting (format: 0:500)"

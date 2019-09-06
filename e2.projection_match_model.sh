@@ -51,9 +51,39 @@ fi
 ext=$(echo ${classes##*.})
 name=$(basename $classes .${ext})
 dir=$(dirname $classes)
+cwd=$(pwd)
 
 ############################################################################
-# Set up projections and do matching
+# Unstack classes
+############################################################################
+
+mkdir -p ${dir}/unstacked
+e2proc2d.py --unstacking ${classes} ${dir}/unstacked/class.mrcs
+
+############################################################################
+# Request input on whether to projection match to all classes or just one
+############################################################################
+
+echo 'Do you want to projection match again all (1) or a specific class (0)...'
+echo 'Enter 1/0:'
+read p
+
+if [[ $p == 1 ]]; then
+  classlist=$(ls ${dir}/unstacked/class*.mrcs)
+elif [[ $p == 0 ]]; then
+  ls ${dir}/unstacked/class*.mrcs
+  echo ''
+  echo 'Enter name of class you want to compare against...'
+  read r
+  classlist=$r
+fi
+
+#while read -r line; do
+#    echo "$line"
+#done <<< "$classlist"
+
+############################################################################
+# Set up model into map
 ############################################################################
 
 # Make volume from model
@@ -62,14 +92,28 @@ e2pdb2mrc.py --center --apix ${apix} --res ${res} --box ${box} ${modelin} ${name
 # Single projection from volume for test matching
 #e2project3d.py -f ../emd_8236_scaled_1p07_256px.mrc --outfile=projection.mrc --orientgen=single:alt=20.00:az=146.19 --projector=standard --verbose=2
 
+############################################################################
+# Do projection matching
+############################################################################
+
+while read -r line; do
+echo "Working on ${line}"
+
+# Directory and folder names
+lineext=$(echo ${line##*.})
+linename=$(basename $line .${ext})
+linedir=$(dirname $line)
+
 # Match volume to projection
-e2classvsproj.py --aligncmp=frc --cmp=frc --threads 4 --savesim ${name}_${res}A_${box}px_proj_match.txt \
-${classes} ${name}_${res}A_${box}px.mrc ${name}_${res}A_${box}px_proj_match.mrcs
+#e2classvsproj.py --aligncmp=frc --cmp=frc --threads 4 --savesim ${name}_${res}A_${box}px_proj_match.txt \
+#${classes} ${name}_${res}A_${box}px.mrc ${name}_${res}A_${box}px_proj_match.mrcs
+e2classvsproj.py --savesim ${name}_${res}A_${box}px_proj_match.txt \
+${line} ${name}_${res}A_${box}px.mrc ${name}_${res}A_${box}px_proj_match.mrcs
 
 # Save some info that is helpful
 echo "$(basename $0) run information:" > ${name}_${res}A_${box}px_proj_match.log
 echo "" >> ${name}_${res}A_${box}px_proj_match.log
-echo "class for comparison:  ${classes}" >> ${name}_${res}A_${box}px_proj_match.log
+echo "class for comparison:  ${line}" >> ${name}_${res}A_${box}px_proj_match.log
 echo "model for comparison:  ${modelin}" >> ${name}_${res}A_${box}px_proj_match.log
 echo "box size:              ${box}" >> ${name}_${res}A_${box}px_proj_match.log
 echo "resolution:            ${res}" >> ${name}_${res}A_${box}px_proj_match.log
@@ -174,17 +218,63 @@ echo ${command} >> ${name}_${res}A_${box}px_proj_match.log
 echo ${commandinv} >> ${name}_${res}A_${box}px_proj_match.log
 
 # Make a chimera script
-echo "open ${dir}/${name}_${res}A_${box}px.mrc" > ${name}_${res}A_${box}px_proj_match.com
+echo "" > ${name}_${res}A_${box}px_proj_match.com
+echo "#alias ^cc color pink \$1:.A; color #ffffb3 \$1:.B; color #bebada \$1:.C; color #fb8072 \$1:.D; color #80b1d3 \$1:.E; color #fdb462 \$1:.F; color #b3de69 \$1:.G; color #fccde5 \$1:.H; color #8dd3c7 \$1:.I" >> ${name}_${res}A_${box}px_proj_match.com
+echo "" >> ${name}_${res}A_${box}px_proj_match.com
+echo "# Open structures" >> ${name}_${res}A_${box}px_proj_match.com
+echo "open ${cwd}/${linename}/${name}_${res}A_${box}px.mrc" >> ${name}_${res}A_${box}px_proj_match.com
 echo "volume #0 origin 0 transparency 0.66" >> ${name}_${res}A_${box}px_proj_match.com
-echo "open ${dir}/${modelin}" >> ${name}_${res}A_${box}px_proj_match.com
-echo "${command}"  >> ${name}_${res}A_${box}px_proj_match.com
-echo "savepos p1"  >> ${name}_${res}A_${box}px_proj_match.com
-echo "matrixget ${dir}/${name}_${res}A_${box}px_proj_match_matrix_p1"  >> ${name}_${res}A_${box}px_proj_match.com
-echo "${commandinv}"  >> ${name}_${res}A_${box}px_proj_match.com
-echo "savepos p2"  >> ${name}_${res}A_${box}px_proj_match.com
-echo "matrixget ${dir}/${name}_${res}A_${box}px_proj_match_matrix_p2"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "open ${cwd}/${modelin}" >> ${name}_${res}A_${box}px_proj_match.com
+echo "lighting mode ambient"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "transparent"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "color_polap #1"  >> ${name}_${res}A_${box}px_proj_match.com
 echo "focus"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "" >> ${name}_${res}A_${box}px_proj_match.com
+
+echo "# Orientation 1" >> ${name}_${res}A_${box}px_proj_match.com
+echo "${command}"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "fitmap #1 #0" >> ${name}_${res}A_${box}px_proj_match.com
+echo "#focus"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "savepos p1"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "matrixget ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p1"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "~modeldisplay #; modeldisplay #0" >> ${name}_${res}A_${box}px_proj_match.com
+echo "copy file ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p1_map.png png" >> ${name}_${res}A_${box}px_proj_match.com
+echo "~modeldisplay #; modeldisplay #1; set silhouette; setattr g display false" >> ${name}_${res}A_${box}px_proj_match.com
+echo "copy file ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p1_PDB.png png" >> ${name}_${res}A_${box}px_proj_match.com
+echo "surface #1; ~set silhouette"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "copy file ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p1_surf.png png" >> ${name}_${res}A_${box}px_proj_match.com
+echo "~surface #1"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "" >> ${name}_${res}A_${box}px_proj_match.com
+
+echo "# Orientation 2" >> ${name}_${res}A_${box}px_proj_match.com
+echo "${commandinv}"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "fitmap #1 #0" >> ${name}_${res}A_${box}px_proj_match.com
+echo "#focus"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "savepos p2"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "matrixget ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p2"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "~modeldisplay #; modeldisplay #0" >> ${name}_${res}A_${box}px_proj_match.com
+echo "copy file ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p2_map.png png" >> ${name}_${res}A_${box}px_proj_match.com
+echo "~modeldisplay #; modeldisplay #1; set silhouette; setattr g display false" >> ${name}_${res}A_${box}px_proj_match.com
+echo "copy file ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p2_PDB.png png" >> ${name}_${res}A_${box}px_proj_match.com
+echo "surface #1; ~set silhouette"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "copy file ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_matrix_p2_surf.png png" >> ${name}_${res}A_${box}px_proj_match.com
+echo "~surface #1"  >> ${name}_${res}A_${box}px_proj_match.com
+echo "" >> ${name}_${res}A_${box}px_proj_match.com
+echo "# Save session" >> ${name}_${res}A_${box}px_proj_match.com
+echo "save ${cwd}/${linename}/${name}_${res}A_${box}px_proj_match_session.py" >> ${name}_${res}A_${box}px_proj_match.com
+echo "stop" >> ${name}_${res}A_${box}px_proj_match.com
+echo ""
+
+#Tidy up
+mkdir -p ${cwd}/${linename}
+mv ${name}* ${cwd}/${linename}
 
 # Show the projection
-e2display.py ${classes} &
-e2display.py ${name}_${res}A_${box}px_proj_match.mrcs &
+e2display.py ${line} &
+e2display.py ${linename}/${name}_${res}A_${box}px_proj_match.mrcs &
+
+# Run chimera from the command line
+#exe=$(which chimera)
+#${exe} ${name}_${res}A_${box}px_proj_match.com
+
+done <<< "$classlist"
