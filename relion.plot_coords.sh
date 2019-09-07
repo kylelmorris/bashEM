@@ -28,6 +28,8 @@ echo "$(basename $0)"
 echo "------------------------------------------------------------------"
 echo "-i - Star file input (required)"
 echo "-m - Search term for micrograph to plot coordinates"
+echo "     Type 'all' to plot all coordinates"
+echo "     Useful if plotting from *manualpick.star"
 echo "-x - Detector size px x"
 echo "-y - Detector size px y"
 echo "-d - Pick diameter (px)"
@@ -79,6 +81,11 @@ else
         echo 'OS type unknown'
 fi
 
+# Directory and folder names of the inputs
+ext=$(echo ${starin##*.})
+name=$(basename $starin .${ext})
+dir=$(dirname $starin)
+
 # Coordinate column names
 coord1=rlnCoordinateX
 coord2=rlnCoordinateY
@@ -102,7 +109,14 @@ echo "Detector size input as (px): ${x} x ${y}"
 echo ""
 
 #Send column data to file, filter out empty lines and remove any file path or particle numbering
-grep ${mic} ${starin} | awk -v column1=$column1 -v column2=$column2 {'print $column1,$column2'} | grep -v '^$' | sed 's!.*/!!' > .coordinates.dat
+if [[ $mic == "all" ]]; then
+  awk 'NF > 2' ${starin} | awk -v column1=$column1 -v column2=$column2 {'print $column1,$column2'} | grep -v '^$' | sed 's!.*/!!' > .coordinates.dat
+  output=$name
+else
+  grep ${mic} ${starin} | awk -v column1=$column1 -v column2=$column2 {'print $column1,$column2'} | grep -v '^$' | sed 's!.*/!!' > .coordinates.dat
+  output=$mic
+fi
+
 #Report how many particles
 echo 'Number of particles in star file to plot coordinates:     ' $(wc -l .coordinates.dat | awk '{print $1}')
 
@@ -116,7 +130,7 @@ else
 fi
 
 # Output
-output="${mic}_particles.png"
+output="${output}_particles.png"
 
 # Plot data
 gnuplot <<- EOF
