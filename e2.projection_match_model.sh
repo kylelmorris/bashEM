@@ -21,7 +21,7 @@
 #
 ############################################################################
 
-pdbin=$2
+modelin=$2
 box=$3
 res=$4
 apix=$5
@@ -37,8 +37,8 @@ if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]] || [[ -z $4 ]] || [[ -z $5 ]] ; the
   echo ""
   echo "Variables empty, usage is $(basename $0) (1) (2) (3) (4) (5)"
   echo ""
-  echo "(1) = class for comparison"
-  echo "(2) = model for comparison"
+  echo "(1) = classes for comparison (*.mrcs)"
+  echo "(2) = model for comparison (*.pdb or *.mrc)"
   echo "(3) = box size"
   echo "(4) = resolution"
   echo "(5) = pixel size"
@@ -58,7 +58,8 @@ cwd=$(pwd)
 ############################################################################
 
 mkdir -p ${dir}/unstacked
-e2proc2d.py --unstacking ${classes} ${dir}/unstacked/class.mrcs
+e2proc2d.py --unstacking ${classes} class.mrcs
+mv class-*.mrcs ${dir}/unstacked
 
 ############################################################################
 # Request input on whether to projection match to all classes or just one
@@ -87,22 +88,34 @@ fi
 ############################################################################
 
 # Directory and folder names
-pdbext=$(echo ${pdbin##*.})
-pdbname=$(basename $pdbin .${pdbext})
-pdbdir=$(dirname $pdbin)
+modelext=$(echo ${modelin##*.})
+modelname=$(basename $modelin .${modelext})
+modeldir=$(dirname $modelin)
 
-# Establish output name
-pdbvol=${pdbname}_${res}A_${box}px.mrc
+if [[ ${modelext} == "pdb" ]] ; then
+  # Establish output name
+  modelvol=${modelname}_${res}A_${box}px.mrc
 
-# Make volume from model
-e2pdb2mrc.py --center --apix ${apix} --res ${res} --box ${box} ${pdbin} ${pdbvol}
+  # Make volume from model
+  e2pdb2mrc.py --center --apix ${apix} --res ${res} --box ${box} ${modelin} ${modelvol}
 
-# Single projection from volume for test matching
-#e2project3d.py -f ../emd_8236_scaled_1p07_256px.mrc --outfile=projection.mrc --orientgen=single:alt=20.00:az=146.19 --projector=standard --verbose=2
+  # Single projection from volume for test matching
+  #e2project3d.py -f ../emd_8236_scaled_1p07_256px.mrc --outfile=projection.mrc --orientgen=single:alt=20.00:az=146.19 --projector=standard --verbose=2
 
-# Output directory
-outdir=${pdbname}_${res}A_${box}px
-mkdir ${outdir}
+  # Output directory
+  outdir=${modelname}_${res}A_${box}px
+  mkdir ${outdir}
+
+elif [[ ${modelext} == "mrc" ]] ; then
+
+  # Establish output name
+  modelvol=${modelin}
+
+  # Output directory
+  outdir=${modelname}
+  mkdir ${outdir}
+
+fi
 
 ############################################################################
 # Do projection matching
@@ -122,17 +135,21 @@ output=${name}_${linename}_${res}A_${box}px_proj_match
 # Match volume to projection
 #e2classvsproj.py --aligncmp=frc --cmp=frc --threads 4 --savesim ${output}.txt \
 #${classes} ${name}_${res}A_${box}px.mrc ${output}.mrcs
+echo ">>> e2classvsproj.py --savesim ${output}.txt ${line} ${modelvol} ${output}.mrcs"
 e2classvsproj.py --savesim ${output}.txt \
-${line} ${pdbvol} ${output}.mrcs
+${line} ${modelvol} ${output}.mrcs
 
 # Make png for quick look
 e2proc2d.py --unstacking --outmode int8 ${output}.mrcs ${output}.png
+# Rename png for better sense
+mv ${output}"-1.png" ${output}"-1_class.png"
+mv ${output}"-2.png" ${output}"-2_model.png"
 
 # Save some info that is helpful
 echo "$(basename $0) run information:" > ${output}.log
 echo "" >> ${output}.log
 echo "class for comparison:  ${line}" >> ${output}.log
-echo "model for comparison:  ${pdbin}" >> ${output}.log
+echo "model for comparison:  ${modelin}" >> ${output}.log
 echo "box size:              ${box}" >> ${output}.log
 echo "resolution:            ${res}" >> ${output}.log
 echo "pixel size:            ${apix}" >> ${output}.log
@@ -240,9 +257,9 @@ echo "" > ${output}.com
 echo "#alias ^cc color pink \$1:.A; color #ffffb3 \$1:.B; color #bebada \$1:.C; color #fb8072 \$1:.D; color #80b1d3 \$1:.E; color #fdb462 \$1:.F; color #b3de69 \$1:.G; color #fccde5 \$1:.H; color #8dd3c7 \$1:.I" >> ${output}.com
 echo "" >> ${output}.com
 echo "# Open structures" >> ${output}.com
-echo "open ${cwd}/${outdir}/${pdbvol}" >> ${output}.com
+echo "open ${cwd}/${outdir}/${modelvol}" >> ${output}.com
 echo "volume #0 origin 0 transparency 0.66" >> ${output}.com
-echo "open ${pdbin}" >> ${output}.com
+echo "open ${modelin}" >> ${output}.com
 echo "lighting mode ambient"  >> ${output}.com
 echo "transparent"  >> ${output}.com
 echo "#color_cc #1"  >> ${output}.com
@@ -302,4 +319,4 @@ mv ${output}* ${outdir}
 done <<< "$classlist"
 
 # Tidy up
-mv ${pdbvol} ${outdir}
+scp -r ${modelvol} ${outdir}
