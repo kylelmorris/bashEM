@@ -37,7 +37,10 @@ rlnpath=$(echo $dirname | sed -n -e 's/^.*Relion//p')
 echo ''
 echo '#########################################################################'
 echo ''
-echo 'Refine3D directory to be backed up:'
+echo 'Refine3D directory name to be backed up:'
+echo ${rlnpath}
+echo ''
+echo 'Refine3D directory to be backed up (ignoring symbolic links):'
 echo ${dirin}
 echo ''
 echo 'Backup location is:'
