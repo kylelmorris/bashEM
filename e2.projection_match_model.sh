@@ -132,18 +132,21 @@ linedir=$(dirname $line)
 # Establish output name
 output=${name}_${linename}_${res}A_${box}px_proj_match
 
+echo $output
+
 # Match volume to projection
 #e2classvsproj.py --aligncmp=frc --cmp=frc --threads 4 --savesim ${output}.txt \
 #${classes} ${name}_${res}A_${box}px.mrc ${output}.mrcs
 echo ">>> e2classvsproj.py --savesim ${output}.txt ${line} ${modelvol} ${output}.mrcs"
-e2classvsproj.py --savesim ${output}.txt \
-${line} ${modelvol} ${output}.mrcs
+e2classvsproj.py --savesim ${output}.txt ${line} ${modelvol} ${output}.mrcs
 
 # Make png for quick look
 e2proc2d.py --unstacking --outmode int8 ${output}.mrcs ${output}.png
 # Rename png for better sense
 mv ${output}"-1.png" ${output}"-1_class.png"
 mv ${output}"-2.png" ${output}"-2_model.png"
+
+exit
 
 # Save some info that is helpful
 echo "$(basename $0) run information:" > ${output}.log
@@ -259,7 +262,7 @@ echo "" >> ${output}.com
 echo "# Open structures" >> ${output}.com
 echo "open ${cwd}/${outdir}/${modelvol}" >> ${output}.com
 echo "volume #0 origin 0 transparency 0.66" >> ${output}.com
-echo "open ${modelin}" >> ${output}.com
+echo "open ${cwd}/${modelin}" >> ${output}.com
 echo "lighting mode ambient"  >> ${output}.com
 echo "transparent"  >> ${output}.com
 echo "#color_cc #1"  >> ${output}.com

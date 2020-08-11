@@ -23,14 +23,15 @@ fi
 
 # Get directory full path
 cwd=$(pwd)
-dirin=$(cd ${dir}; pwd -P)
+dirin=$(cd ${dir}; pwd -P) #This is the true path, ignoring symbolic links
+dirname=$(cd ${dir}; pwd) #This is the path including symbolic links
 cd ${cwd}
 
 # Directory and folder names
 ext=$(echo ${dirin##*.})
 name=$(basename $dirin .${ext})
 dir=$(dirname $dirin)
-rlnpath=$(echo $dirin | sed -n -e 's/^.*Relion//p')
+rlnpath=$(echo $dirname | sed -n -e 's/^.*Relion//p')
 
 #Report what's going to happen
 echo ''
