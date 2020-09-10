@@ -10,7 +10,7 @@ if [[ -z $1 ]] || [[ -z $2 ]] ; then
   echo ""
   echo "Variables empty, usage is ${0} (1) (2)"
   echo ""
-  echo "(1) = InitialModel directory in"
+  echo "(1) = Relion directory in"
   echo "(2) = Backup directory out"
   echo "(3) = port number for scp (optional)"
   exit
