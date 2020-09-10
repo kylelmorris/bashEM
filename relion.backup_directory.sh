@@ -37,10 +37,10 @@ rlnpath=$(echo $dirname | sed -n -e 's/^.*Relion//p')
 echo ''
 echo '#########################################################################'
 echo ''
-echo 'InitialModel directory name to be backed up:'
+echo 'Relion directory name to be backed up:'
 echo ${rlnpath}
 echo ''
-echo 'InitialModel directory to be backed up (ignoring symbolic links):'
+echo 'Relion directory to be backed up (ignoring symbolic links):'
 echo ${dirin}
 echo ''
 echo 'Backup location is:'
