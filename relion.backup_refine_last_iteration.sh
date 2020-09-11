@@ -39,6 +39,7 @@ rlnpath=$(echo $dirname | sed -n -e 's/^.*Relion//p')
 #Report what's going to happen
 echo ''
 echo '#########################################################################'
+echo $iteration
 echo ''
 echo 'Relion directory name to be backed up:'
 echo ${rlnpath}
@@ -74,7 +75,9 @@ scp -P $port -r ${dirin}/run.err \
 ${dirin}/run.out \
 ${dirin}/note.txt \
 ${dirin}/*${iteration}* \
-${dirout}
+${dirout}/Relion/${rlnpath}
+
+rm -rf $dirin/README
 
 # Finish
 echo ""
