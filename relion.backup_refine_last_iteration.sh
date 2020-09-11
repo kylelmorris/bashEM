@@ -21,9 +21,6 @@ if [[ -z $3 ]] ; then
   port=22
 fi
 
-#Get last iteration index
-iteration=$(ls ${dirin} | grep run_it | tail -n 1 | cut -c5-9)
-
 # Get directory full path
 cwd=$(pwd)
 dirin=$(cd ${dir}; pwd -P) #This is the true path, ignoring symbolic links
@@ -35,6 +32,9 @@ ext=$(echo ${dirin##*.})
 name=$(basename $dirin .${ext})
 dir=$(dirname $dirin)
 rlnpath=$(echo $dirname | sed -n -e 's/^.*Relion//p')
+
+#Get last iteration index
+iteration=$(ls ${dirin} | grep run_it | tail -n 1 | cut -c5-9)
 
 #Report what's going to happen
 echo ''
