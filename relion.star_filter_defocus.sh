@@ -40,10 +40,10 @@ dir=$(dirname $starin)
 starout=${dir}/${name}_filtered.${ext}
 
 #Filter by defocus values
-awk -v low=${dfUlow} -v high=${dfUhigh} -v col=${star_col_df} ' $col > low && $col < high ' .mainDataLine.dat > .mainDataLine_filtered.dat
+awk -v low=${dfUlow} -v high=${dfUhigh} -v col=${star_col_df} ' $col > low && $col < high ' .mainDataLines.dat > .mainDataLines_filtered.dat
 
 #Make new star file
-cat .opticsDataLines.dat .mainDataHeader.dat .mainDataLine.dat > $starout
+cat .opticsDataLines.dat .mainDataHeader.dat .mainDataLines.dat > $starout
 
 #Tidy up
 rm -rf *dat
