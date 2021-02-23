@@ -8,7 +8,7 @@ dfUhigh=$3
 if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]]; then
 
   echo ""
-  echo "Variables empty, usage is $(0) (1) (2) (3)"
+  echo "Variables empty, usage is $(basename $0) (1) (2) (3)"
   echo ""
   echo "(1) = star to filter"
   echo "(2) = lowest defocus (Angstroms)"

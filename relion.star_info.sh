@@ -22,7 +22,7 @@
 #
 ############################################################################
 
-star1=$1
+starin=$1
 
 if [[ -z $1 ]] ; then
 
@@ -38,10 +38,11 @@ if [[ -z $1 ]] ; then
 fi
 
 # Test if star file is present
-if [[ -e $star1 ]] ; then
+if [[ -e $starin ]] ; then
   echo ''
   echo '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
   echo 'Star file found...'
+  echo '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
   echo ''
 else
   echo ''
@@ -52,82 +53,17 @@ else
   exit
 fi
 
-# Tidy up from previous execution
-rm -rf .star1header.dat
-
-################################################################################
-# Get header and data lines
-################################################################################
-
-##As of relion3 a version header is included in star file, ascertain for reporting and removal
-versionSearch=$(cat ${star1} | grep "version" | head -n 1)
-
-if [[ -z ${versionSearch} ]] ; then
-  version=$(echo "No Relion version header found...")
-  versionSearch="Unknown"
-  #### INSERT CODE HERE TO CREATE A FAKE OPTICS GROUP FILE FOR READING PIXEL SIZE ETC ####
-else
-  version=$(echo "Relion version: ${versionSearch}")
-fi
-
-echo $version
-echo ""
-
-##The following code implements a new way to find relion star file headers since version 3.1 changes
-# Find data_ blocks
-dataBlocks=$(grep -n data_ ${star1} | sed 's/:/ /g')
-
-echo "Found the following number of data_ blocks in header: $(echo "$dataBlocks" | wc -l)"
-echo ""
-
-# Report data_ block names without line numbers
-echo "$dataBlocks" | awk '{print "\t",$2,"(@ line: "$1")"}'
-echo ""
-
-# Store data_optics line number
-opticsDataBlockNo=$(echo "$dataBlocks" | head -n 1 | awk '{print $1}')
-# Store main data_ block line number
-mainDataBlockNo=$(echo "$dataBlocks" | tail -n 1 | awk '{print $1}')
-
-# Store the first optic line (i.e. containing > 3 columns) after first data_optics block
-opticsDataLine=$(cat ${star1} | awk -v opticsDataBlockNo=$opticsDataBlockNo 'NR>=opticsDataBlockNo' | awk 'NF > 3' | head -n 1)
-# Find the first dataline number
-opticsDataLineNo=$(grep -n "${opticsDataLine}" ${star1} | sed 's/:/ /g' | awk '{print $1}')
-echo "First optics line appears on line no: ${opticsDataLineNo}"
-
-# Store the first data line (i.e. containing > 3 columns) after final data_ block
-mainDataLine=$(cat ${star1} | awk -v mainDataBlockNo=$mainDataBlockNo 'NR>=mainDataBlockNo' | awk 'NF > 3' | head -n 1)
-# Find the first dataline number
-mainDataLineNo=$(grep -n "${mainDataLine}" ${star1} | sed 's/:/ /g' | awk '{print $1}')
-echo "First data line appears on line no: ${mainDataLineNo}"
-
-# Save optics group to file and clean up header
-cat ${star1} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/Q" | awk 'NF < 3' > .opticsDataHeader.dat
-# Save optics group to file and clean up header
-cat ${star1} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/Q" | awk 'NF > 3' > .opticsDataLines.dat
-# Save mainDataBlock header
-cat ${star1} | sed -n ${mainDataBlockNo},${mainDataLineNo}p | sed "/${versionSearch}/Q" | sed '$ d' > .mainDataHeader.dat
-# Save mainDataLines, remove blank lines
-cat ${star1} | sed -n "${mainDataLineNo},$ p" | sed '/^\s*$/d' > .mainDataLines.dat
-# Save a single line of star1 for certain calculations
-sed -n '1p' .mainDataLines.dat > .mainDataLine.dat
-
-# Files for diagnostics
-#scp .opticsDataHeader.dat opticsDataHeader.dat
-#scp .opticsDataLines.dat opticsDataLines.dat
-#scp .mainDataHeader.dat mainDataHeader.dat
-#scp .mainDataLines.dat mainDataLines.dat
-#scp .mainDataLine.dat mainDataLine.dat
-
-echo '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
-echo ""
+# As of Relion3 star file formatting changed
+# Use relion.star_extract_data.sh to extract data and header lines
+# Assumes all of bashEM repository is in $PATH
+relion.star_extract_data.sh ${starin}
 
 ################################################################################
 # Process star file
 ################################################################################
 
 #Calculate number of particles by data lines minus header
-totallines=$(wc -l $star1 | awk {'print $1'})
+totallines=$(wc -l $starin | awk {'print $1'})
 #mainHeaderLines=$(wc -l .mainDataHeader.dat | awk {'print $1'})
 mainDataLines=$(wc -l .mainDataLines.dat | awk {'print $1'})
 #opticsHeaderLines=$(wc -l .opticsDataHeader.dat | awk {'print $1'})
@@ -185,7 +121,7 @@ echo '###############################################################'
 echo '## Relion star file information ###############################'
 echo '###############################################################'
 echo ''
-echo 'File:           ' $star1
+echo 'File:           ' $starin
 echo 'Relion version: ' $versionSearch
 echo ''
 #echo 'Number of main data header lines in star file: ' $mainHeaderLines
