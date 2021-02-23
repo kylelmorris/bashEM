@@ -27,6 +27,19 @@
 # Input star file
 starin=$1
 
+if [[ -z $1 ]] ; then
+
+  echo ""
+  echo "Variables empty, usage is: "
+  echo ""
+  echo "$(basename $0) (1)"
+  echo ""
+  echo "(1) = Input star file"
+  echo ""
+  exit
+
+fi
+
 # Tidy up from last round
 rm -rf .mainDataLine.dat
 rm -rf .opticsDataLines.dat
