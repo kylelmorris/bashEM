@@ -42,6 +42,7 @@ fi
 
 # Tidy up from last round
 rm -rf .mainDataLine.dat
+rm -rf .mainDataLines.dat
 rm -rf .opticsDataLines.dat
 rm -rf .mainDataHeader.dat
 
