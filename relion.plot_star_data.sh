@@ -100,7 +100,8 @@ EOF
   mv ${columnname}.dat relion_star_plot_data
   mv rln_data_plot.png relion_star_plot_data
 
-  gpicview relion_star_plot_data/rln_data_plot.png
+  gio open relion_star_plot_data/rln_data_plot.png
+  #gpicview relion_star_plot_data/rln_data_plot.png
   open relion_star_plot_data/rln_data_plot.png
 
 else
@@ -155,7 +156,8 @@ EOF
   mv rln_data_plot_sel.png relion_star_plot_data
   mv star_sel.star relion_star_plot_data/${file}_sel.star
 
-  gpicview relion_star_plot_data/rln_data_plot_sel.png
+  gio open relion_star_plot_data/rln_data_plot.png
+  #gpicview relion_star_plot_data/rln_data_plot.png
   open relion_star_plot_data/rln_data_plot_sel.png
 
 fi
