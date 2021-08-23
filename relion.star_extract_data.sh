@@ -27,7 +27,7 @@
 # Input star file
 starin=$1
 
-if [[ -z $1 ]] ; then
+if [[ -z $1 ]] || [[ -z $2 ]] ; then
 
   echo ""
   echo "Variables empty, usage is: "
@@ -35,9 +35,20 @@ if [[ -z $1 ]] ; then
   echo "$(basename $0) (1)"
   echo ""
   echo "(1) = Input star file"
+  echo "(2) = Output directory (optional)"
+  echo "      Default: .star_extract_data"
   echo ""
   exit
 
+fi
+
+# Directory for output
+if [[ -z $2 ]] ; then
+  dirout=.star_extract_data
+  mkdir -p $dirout
+else
+  dirout=$2
+  mkdir -p $dirout
 fi
 
 # Tidy up from last round
@@ -64,11 +75,14 @@ fi
 echo $version
 echo ""
 
+#Save the version
+echo ${versionSearch} > $dirout/.version.dat
+
 ##The following code implements a new way to find relion star file headers since version 3.1 changes
 # Find data_ blocks
 dataBlocks=$(grep -n data_ ${starin} | sed 's/:/ /g')
 
-echo "Found the following number of data_ blocks in header: $(echo "$dataBlocks" | wc -l)"
+echo "Found the following number of data_blocks in header: $(echo "$dataBlocks" | wc -l)"
 echo ""
 
 # Report data_ block names without line numbers
@@ -93,15 +107,15 @@ mainDataLineNo=$(grep -n "${mainDataLine}" ${starin} | sed 's/:/ /g' | awk '{pri
 echo "First data line appears on line no: ${mainDataLineNo}"
 
 # Save optics group to file and clean up header
-cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/Q" | awk 'NF < 3' > .opticsDataHeader.dat
+cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/d" | sed "/data_particles/d" | awk 'NF < 3' > $dirout/.opticsDataHeader.dat
 # Save optics group to file and clean up header
-cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/Q" | awk 'NF > 3' > .opticsDataLines.dat
+cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/d" | awk 'NF > 3' > $dirout/.opticsDataLines.dat
 # Save mainDataBlock header
-cat ${starin} | sed -n ${mainDataBlockNo},${mainDataLineNo}p | sed "/${versionSearch}/Q" | sed '$ d' > .mainDataHeader.dat
+cat ${starin} | sed -n ${mainDataBlockNo},${mainDataLineNo}p | sed "/${versionSearch}/d" | sed '$ d' > $dirout/.mainDataHeader.dat
 # Save mainDataLines, remove blank lines
-cat ${starin} | sed -n "${mainDataLineNo},$ p" | sed '/^\s*$/d' > .mainDataLines.dat
+cat ${starin} | sed -n "${mainDataLineNo},$ p" | sed '/^\s*$/d' > $dirout/.mainDataLines.dat
 # Save a single line of starin for certain calculations
-sed -n '1p' .mainDataLines.dat > .mainDataLine.dat
+sed -n '1p' $dirout/.mainDataLines.dat > $dirout/.mainDataLine.dat
 
 # Files for diagnostics
 #scp .opticsDataHeader.dat opticsDataHeader.dat
