@@ -6,6 +6,7 @@
 # Author: "Kyle L. Morris"
 # University of Warwick 2016
 # MRC London Institute of Medical Sciences 2019
+# Diamond Light Source 2021
 #
 # This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by

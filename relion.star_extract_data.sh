@@ -107,13 +107,13 @@ mainDataLineNo=$(grep -n "${mainDataLine}" ${starin} | sed 's/:/ /g' | awk '{pri
 echo "First data line appears on line no: ${mainDataLineNo}"
 
 # Save optics group to file and clean up header
-cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/d" | sed "/data_particles/d" | awk 'NF < 3' > $dirout/.opticsDataHeader.dat
+cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/d" | sed "/data_particles/d" | awk 'NF < 3'  | awk NF > $dirout/.opticsDataHeader.dat
 # Save optics group to file and clean up header
-cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/d" | awk 'NF > 3' > $dirout/.opticsDataLines.dat
+cat ${starin} | sed -n ${opticsDataBlockNo},${mainDataBlockNo}p | sed "/${versionSearch}/d" | awk 'NF > 3' | awk NF > $dirout/.opticsDataLines.dat
 # Save mainDataBlock header
-cat ${starin} | sed -n ${mainDataBlockNo},${mainDataLineNo}p | sed "/${versionSearch}/d" | sed '$ d' > $dirout/.mainDataHeader.dat
+cat ${starin} | sed -n ${mainDataBlockNo},${mainDataLineNo}p | sed "/${versionSearch}/d" | sed '$ d'  | awk NF > $dirout/.mainDataHeader.dat
 # Save mainDataLines, remove blank lines
-cat ${starin} | sed -n "${mainDataLineNo},$ p" | sed '/^\s*$/d' > $dirout/.mainDataLines.dat
+cat ${starin} | sed -n "${mainDataLineNo},$ p" | sed '/^\s*$/d' | awk NF > $dirout/.mainDataLines.dat
 # Save a single line of starin for certain calculations
 sed -n '1p' $dirout/.mainDataLines.dat > $dirout/.mainDataLine.dat
 
