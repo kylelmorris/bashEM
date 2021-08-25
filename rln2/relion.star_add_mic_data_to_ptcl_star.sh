@@ -37,8 +37,15 @@ if [[ -z $1 ]] || [[ -z $2 ]]; then
 fi
 
 # Directory for working in
-dirout=.star_replace
+dirout=.star_add
 mkdir -p $dirout
+
+# Directory and folder names
+ext=$(echo ${starin##*.})
+name=$(basename $starin .${ext})
+dir=$(dirname $starin)
+
+starout=${name}_edit.${ext}
 
 # Make sure directory is clean
 #rm -rf $dirout
@@ -119,7 +126,7 @@ do
   #newline=$(echo $dataline)
   #newline=$(echo $dataline | awk -v a=$new1 -v b=$new2 -v c=$new3 -v d=$new4 -v e=$new5 -v f=$new6 '{print a,b,c,d,e,f}')
   newline=$(echo $dataline | awk -v a=$new1 -v b=$new2 -v c=$new3 -v d=$new4 -v e=$new5 -v f=$new6 '{print a,b,c,d,e,f,$0}')
-  echo $newline >> datalinesnew.dat
+  echo $newline >> $dirout/newDataLines.dat
 
   #Useful information, math on percentage completeness
   pcnt=$(bc <<< "scale=3; $i/$lineno*100")
@@ -135,48 +142,19 @@ echo ""
 echo "Number of data lines in original particle star file: "$starin
 echo "${lineno}"
 echo "Number of data lines in new UVA replaced particle star file:"
-echo $(wc -l datalinesnew.dat | awk '{print $1}')
+echo $(wc -l $dirout/newDataLines.dat | awk '{print $1}')
 echo ""
 
-# Send header to new star file, followed by each new line with replaced UVA
-cat star1header.dat datalinesnew.dat > star_replaced.star
+# Make new dataheader
+grep -E 'rln' .star_replace/starreplace/.mainDataHeader.dat .star_replace/starin/.mainDataHeader.dat | cut -d ":" -f2 | cut -d "#" -f1 | awk '{print $0,"#"FNR}' > ${dirout}/.tmp.dat
+printf "data_particles\nloop\n" | cat - $dirout/.tmp.dat > $dirout/newDataHeader.dat
 
-# Useful message
-
-echo ""
-echo "Done!"
-echo ""
-
-# Tidy up
-rm -rf *dat
+# Make new header
+cat $dirout/starreplace/.version.dat <(echo) $dirout/starreplace/.opticsDataHeader.dat $dirout/starreplace/.opticsDataLines.dat <(echo) $dirout/starreplace/.version.dat <(echo) $dirout/newDataHeader.dat $dirout/newDataLines.dat > tmp.star
+mv tmp.star $starout
 
 # Finish
 echo ""
 echo "Done!"
 echo "Script written by Kyle Morris"
 echo ""
-
-
-
-
-exit
-
-# Old stuff
-
-# Get column names from star in (particles)
-micnamecol2=$(grep "rlnMicrographName" $dirout/starin/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
-micmetadat2=$(grep "rlnMicrographMetadata" $dirout/starin/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
-micopticsg2=$(grep "rlnOpticsGroup" $dirout/starin/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
-micaccummt2=$(grep "rlnAccumMotionTotal" $dirout/starin/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
-micaccumme2=$(grep "rlnAccumMotionEarly" $dirout/starin/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
-micaccumml2=$(grep "rlnAccumMotionLate" $dirout/starin/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
-
-echo ""
-echo "${starin} micrograph file columns:"
-echo "rlnMicrographName:     $micnamecol2"
-echo "rlnMicrographMetadata: $micmetadat2"
-echo "rlnOpticsGroup:        $micopticsg2"
-echo "rlnAccumMotionTotal:   $micaccummt2"
-echo "rlnAccumMotionEarly:   $micaccumme2"
-echo "rlnAccumMotionLate:    $micaccumml2"
-echo "rlnAccumMotionLate:    $micaccumml2"

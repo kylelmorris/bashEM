@@ -60,7 +60,6 @@ else
     grep -v $columndel $dirout/.mainDataHeader.dat | grep '_rln' | cut -d "#" -f1 | awk '{print $0,"#"FNR}' > $dirout/.tmp.dat
     #Reformat data header - renumber the header columns
     printf "data_particles\nloop\n" | cat - $dirout/.tmp.dat > $dirout/.mainDataHeader.dat
-    #awk '{print $0,"#"FNR}' would add lines numbers with #, but need to confine to _rln*
   fi
 fi
 
