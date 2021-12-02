@@ -27,7 +27,7 @@
 # Input star file
 starin=$1
 
-if [[ -z $1 ]] || [[ -z $2 ]] ; then
+if [[ -z $1 ]] ; then
 
   echo ""
   echo "Variables empty, usage is: "

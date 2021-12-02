@@ -21,26 +21,34 @@ if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]] || [[ -z $4 ]]; then
 
 fi
 
+file=$(ls postprocess*.mrc)
+
 # check is postprocessing map exists
-if [[ -f postprocess_masked.mrc ]] ; then
+if [[ -f $file ]] ; then
+  mapin=$(ls postprocess*)
+  ext=$(echo ${mapin##*.})
+  name=$(basename $mapin .${ext})
+  dir=$(dirname $mapin)
   echo ""
-  echo "Success! postprocess_masked.mrc exists, continuing..."
+  echo "Success! ${mapin} exists, continuing..."
+  echo "Enter to continue or ctrl-c to exit."
+  read p
 else
   echo ""
-  echo "postprocess_masked.mrc not found, exiting..."
+  echo "No postprocess map found, exiting..."
   exit
 fi
 
 # zflip if necessary
 if [[ $flip == y ]] ; then
-  mapin=postprocess_masked_flipZ.mrc
-  mapout=$(basename $mapin .mrc)
   printf "flipZ of map....\n"
-  relion_image_handler --i postprocess_masked.mrc --o postprocess_masked_flipZ.mrc --flipZ
+  relion_image_handler --i ${mapin} --o ${name}_flipZ.${ext} --flipZ
+  mapin=${name}_flipZ.${ext}
+  mapout=$(basename $mapin .mrc)
 fi
 
 if [[ $flip == n ]] ; then
-  mapin=postprocess_masked.mrc
+  mapin=${mapin}
   mapout=$(basename $mapin .mrc)
 fi
 
@@ -128,8 +136,8 @@ echo "Do you want to perform local sharpening as well? y/n"
 read p
 if [ $p == y ] ; then
   echo "Performing global and local optimal b-factor sharpening with phenix.autosharpen..."
-  mkdir ${outdir}/autosharpen.global
-  mkdir ${outdir}/autosharpen.local
+  mkdir autosharpen.global
+  mkdir autosharpen.local
   phenix.auto_sharpen ${mapin} resolution=${dmin} local_sharpening=False output_directory=${outdir}/autosharpen.global
   phenix.auto_sharpen ${mapin} resolution=${dmin} local_sharpening=True output_directory=${outdir}/autosharpen.local
 else
