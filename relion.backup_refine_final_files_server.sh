@@ -64,11 +64,18 @@ mkdir -p ${dirout}/Refine3D${rlnpath}
 #Write a README to the backup location with the original location of the files
 echo "host information (local):" > $dirout/README
 hostname -s >> $dirout/README
+echo "" >> $dirout/README
+
+echo "Refine3D local location:" >> $dirout/README
+echo $(ls -d -1 $dirout) >> $dirout/README
+echo "" >> $dirout/README
+
 echo "host information (remote):" >> $dirout/README
 echo $server -s >> $dirout/README
 echo "" >> $dirout/README
-echo "Refine3D location:" >> $dirout/README
-echo $(ls -d -1 $dirout) >> $dirout/README
+
+echo "Refine3D remote location:" >> $dirout/README
+echo ${dir} >> $dirout/README
 echo "" >> $dirout/README
 
 #Copy files from specified Refine3D directory to backup location
@@ -87,7 +94,7 @@ ${dirout}/Refine3D${rlnpath}
 
 #Copy run note details to README
 cat $dirout/note.txt >> $dirout/README
-mv $dirin/README ${dirout}/Refine3D${rlnpath}
+mv $dirout/README ${dirout}/Refine3D${rlnpath}
 
 # Finish
 echo ""

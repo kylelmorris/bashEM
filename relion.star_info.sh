@@ -59,7 +59,7 @@ dirout=$(echo ".star_info")
 # As of Relion3 star file formatting changed
 # Use relion.star_extract_data.sh to extract data and header lines
 # Assumes all of bashEM repository is in $PATH
-relion.star_extract_data.sh ${starin} ${dirout}
+relion.star_data_extract.sh ${starin} ${dirout}
 
 ################################################################################
 # Process star file
