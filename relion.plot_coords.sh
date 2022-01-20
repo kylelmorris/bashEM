@@ -34,7 +34,7 @@ echo "-x - Detector size px x"
 echo "-y - Detector size px y"
 echo "-d - Pick diameter (px)"
 echo "-s - Surpress output (optional) y/n"
-echo "-f - Flip coordinates (optional) y/n"
+echo "-f - Flip coordinates (optional) y/x/n"
 echo ""
 echo "------------------------------------------------------------------"
 
@@ -122,11 +122,17 @@ echo 'Number of particles in star file to plot coordinates:     ' $(wc -l .coord
 
 # Reverse axis for horizontal flip or not
 if [[ $flip == y ]]; then
-  reverse="reverse"
+  reversey="reverse"
+  reversex=""
+elif [[ $flip == x ]]; then
+  reversey=""
+  reversex="reverse"
 elif [[ $flip == n ]]; then
-  reverse=""
+  reversey=""
+  reversex=""
 else
-  reverse=""
+  reversey=""
+  reversex=""
 fi
 
 # Output
@@ -134,8 +140,8 @@ output="${output}_particles.png"
 
 # Plot data
 gnuplot <<- EOF
-set xrange [0:${x}]
-set yrange [0:${y}] $reverse
+set xrange [0:${x}] $reversex
+set yrange [0:${y}] $reversey
 set term png transparent truecolor
 set term png size 1024,1024
 set autoscale xfix
