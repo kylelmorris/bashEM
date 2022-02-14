@@ -4,6 +4,7 @@
 ############################################################################
 #
 # Author: "Kyle L. Morris"
+# eBIC Diamond Light Source 2022
 # MRC LMS 2019
 #
 # This program is free software: you can redistribute it and/or modify
@@ -69,35 +70,27 @@ else
   mkdir -p ${outdir}
 fi
 
-#Get header of star1
-awk 'NF < 3' < ${starin} > .star1header.dat
+# Extract star data
+relion.star_data_extract.sh $starin
 
-#As of relion3 a version header is included in star file, ascertain for reporting and removal
-search=$(grep "# RELION; version" ${starin})
-
-if [[ -z ${search} ]] ; then
-  version=$(echo "No Relion version header found...")
-  diff .star1header.dat ${starin} | awk '!($1="")' > .star1lines.dat
-else
-  version=$(echo ${search})
-  diff .star1header.dat ${starin} | sed "/${version}/d" | awk '!($1="")' > .star1lines.dat
-fi
-
-#Get datalines of star1 and remove blank lines
-sed '/^\s*$/d' .star1lines.dat > .tmp.dat
-mv .tmp.dat .star1lines.dat
+# Define file name outputs
+mainDataHeader=".star_data_extract/mainDataHeader.dat"
+opticsDataHeader=".star_data_extract/opticsDataHeader.dat"
+opticsDataLines=".star_data_extract/opticsDataLines.dat"
+mainDataLines=".star_data_extract/mainDataLines.dat"
+mainDataLine=".star_data_extract/mainDataLine.dat"
 
 #Calculate number of particles by data lines minus header
-totallines=$(wc -l $starin | awk {'print $1'})
-headerlines=$(wc -l .star1header.dat | awk {'print $1'})
-ptcllines=$(wc -l .star1lines.dat | awk {'print $1'})
+totallines=$(wc -l $mainDataLines | awk {'print $1'})
+headerlines=$(wc -l $mainDataHeader | awk {'print $1'})
+ptcllines=$(wc -l $mainDataLines | awk {'print $1'})
 
 #Calculate number of micrographs
 columnname=rlnMicrographName
-column=$(grep ${columnname} ${starin} | awk '{print $2}' | sed 's/#//g')
+column=$(grep ${columnname} $mainDataHeader | awk '{print $2}' | sed 's/#//g')
 #echo $columnname 'is column number:' $column
-miclines=$(awk -v column=$column '{print $column}' .star1lines.dat | sort -u | wc -l | awk {'print $1'})
-awk -v column=$column '{print $column}' .star1lines.dat | sort -u  > .miclines.dat
+miclines=$(awk -v column=$column '{print $column}' $mainDataLines | sort -u | wc -l | awk {'print $1'})
+awk -v column=$column '{print $column}' $mainDataLines | sort -u  > .miclines.dat
 
 #Calculate ptcls per micrograph in star file
 ptclpermic=$(bc <<< "scale=0; ${ptcllines}/${miclines}")
@@ -110,16 +103,16 @@ coord4=rlnClassNumber
 coord5=rlnAutopickFigureOfMerit
 
 #Get column number in star file
-column1=$(grep ${coord1} ${starin} | awk '{print $2}' | sed 's/#//g')
-columnname1=$(grep ${coord1} ${starin} | awk '{print $1}' | sed 's/#//g')
-column2=$(grep ${coord2} ${starin} | awk '{print $2}' | sed 's/#//g')
-columnname2=$(grep ${coord2} ${starin} | awk '{print $1}' | sed 's/#//g')
-column3=$(grep ${coord3} ${starin} | awk '{print $2}' | sed 's/#//g')
-columnname3=$(grep ${coord3} ${starin} | awk '{print $1}' | sed 's/#//g')
-column4=$(grep ${coord4} ${starin} | awk '{print $2}' | sed 's/#//g')
-columnname4=$(grep ${coord4} ${starin} | awk '{print $1}' | sed 's/#//g')
-column5=$(grep ${coord5} ${starin} | awk '{print $2}' | sed 's/#//g')
-columnname5=$(grep ${coord5} ${starin} | awk '{print $1}' | sed 's/#//g')
+column1=$(grep ${coord1} $mainDataHeader | awk '{print $2}' | sed 's/#//g')
+columnname1=$(grep ${coord1} $mainDataHeader | awk '{print $1}' | sed 's/#//g')
+column2=$(grep ${coord2} $mainDataHeader | awk '{print $2}' | sed 's/#//g')
+columnname2=$(grep ${coord2} $mainDataHeader | awk '{print $1}' | sed 's/#//g')
+column3=$(grep ${coord3} $mainDataHeader | awk '{print $2}' | sed 's/#//g')
+columnname3=$(grep ${coord3} $mainDataHeader | awk '{print $1}' | sed 's/#//g')
+column4=$(grep ${coord4} $mainDataHeader | awk '{print $2}' | sed 's/#//g')
+columnname4=$(grep ${coord4} $mainDataHeader | awk '{print $1}' | sed 's/#//g')
+column5=$(grep ${coord5} $mainDataHeader | awk '{print $2}' | sed 's/#//g')
+columnname5=$(grep ${coord5} $mainDataHeader | awk '{print $1}' | sed 's/#//g')
 #echo 'Column name to plot:         ' $columnname1
 #echo "Column number:                #${column1}"
 #echo 'Column name to plot:         ' $columnname2
@@ -149,7 +142,7 @@ while read p ; do
   ext=$(echo ${p##*.})
   name=$(basename $p .${ext})
   #Pull star file data lines containing current micrograph
-  grep $p .star1lines.dat | awk -v OFS='\t' -v pickx=${column1} -v picky=${column2} -v psi=${column3} -v class=${column4} -v FOM=${column5} '{print $pickx,$picky,$psi,$class,$FOM}' > .coorddata.star
+  grep $p $mainDataLines | awk -v OFS='\t' -v pickx=${column1} -v picky=${column2} -v psi=${column3} -v class=${column4} -v FOM=${column5} '{print $pickx,$picky,$psi,$class,$FOM}' > .coorddata.star
   #Combine coordinate header with coordinate data for this micrograph
   cat .coord_header.star .coorddata.star > ${outdir}/${name}_manualpick.star
 done < .miclines.dat
