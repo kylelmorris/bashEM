@@ -88,9 +88,9 @@ file=$(basename $starin .star)
 relion.star_data_extract.sh $starin .relion_star_plot_data
 
 #Expect the following files with start file data
-dataHeader=.relion_star_plot_data/.mainDataHeader.dat
+dataHeader=.relion_star_plot_data/mainDataHeader.dat
 # .mainDataLine.dat
-dataLines=.relion_star_plot_data/.mainDataLines.dat
+dataLines=.relion_star_plot_data/mainDataLines.dat
 # .opticsDataHeader.dat
 # .opticsDataLines.dat
 # .version.dat
