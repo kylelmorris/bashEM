@@ -1,4 +1,4 @@
-#!/bin/bash
+                                                                                                  #!/bin/bash
 #
 #
 ############################################################################
@@ -121,10 +121,10 @@ fi
 echo 'Number of particles in star file to plot coordinates:     ' $(wc -l .coordinates.dat | awk '{print $1}')
 
 # Reverse axis for horizontal flip or not
-if [[ $flip == y ]]; then
+if [[ $flip == x ]]; then
   reversey="reverse"
   reversex=""
-elif [[ $flip == x ]]; then
+elif [[ $flip == y ]]; then
   reversey=""
   reversex="reverse"
 elif [[ $flip == n ]]; then
@@ -137,13 +137,15 @@ fi
 
 # Output
 output="${output}_particles.png"
+xdim=$(echo "${x} / 4" | bc)
+ydim=$(echo "${y} / 4" | bc)
 
 # Plot data
 gnuplot <<- EOF
 set xrange [0:${x}] $reversex
 set yrange [0:${y}] $reversey
 set term png transparent truecolor
-set term png size 1024,1024
+set term png size ${xdim},${ydim}
 set autoscale xfix
 set autoscale yfix
 set margins 0,0,0,0

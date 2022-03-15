@@ -12,8 +12,8 @@ if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]] ; then
   echo "Variables empty, usage is ${0} (1) (2) (3)"
   echo ""
   echo "(1) = server"
-  echo "(2) = dirin Relion directory in on server"
-  echo "(3) = Local directory to backup to"
+  echo "(2) = Relion directory in"
+  echo "(3) = Backup directory out"
   echo "(4) = port number for scp (optional)"
   exit
 
@@ -37,16 +37,12 @@ name=$(basename $dirin .${ext})
 dir=$(dirname $dirin)
 rlnpath=$(echo $dirname | sed -n -e 's/^.*Relion//p')
 
-#Get last iteration index
-iteration=$(ssh $server ls -tr ${dirin}| grep run | grep data | tail -n 1 | sed -e 's/.*run_\(.*\)_data.*/\1/')
-
 #Report what's going to happen
 echo ''
 echo '#########################################################################'
-echo $iteration
 echo ''
 echo 'Relion directory name to be backed up:'
-echo ${dirname}
+echo ${rlnpath}
 echo ''
 echo 'Relion directory to be backed up (ignoring symbolic links):'
 echo ${dirin}
@@ -69,15 +65,14 @@ echo "host information (remote):" >> $dirout/README
 echo $server -s >> $dirout/README
 echo "" >> $dirout/README
 echo "Relion directory location:" >> $dirout/README
-echo $(ls -d -1 $dirout) >> $dirout/README
+echo $(ls -d -1 $dirin) >> $dirout/README
 echo "" >> $dirout/README
 
+#Set up directory on remote end
+mkdir -p ${dirout}
+
 #Copy files
-rsync -aP $server:"${dirin}/run.err \
-${dirin}/run.out \
-${dirin}/note.txt \
-${dirin}/*${iteration}*" \
-${dirout}
+rsync -aP ${server}:"${dirin}" ${dirout}
 
 #Copy run note details to README
 cat $dirout/note.txt >> $dirout/README
