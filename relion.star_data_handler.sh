@@ -45,7 +45,7 @@ if [[ -z $columndel ]] ; then
   echo 'No column to delete'
 else
   #Split star file into parts
-  relion.star_extract_data.sh $starin $dirout
+  relion.star_data_extract.sh $starin $dirout
   #Find column number
   columndelno=$(grep $columndel $dirout/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
 
