@@ -47,19 +47,19 @@ else
   #Split star file into parts
   relion.star_data_extract.sh $starin $dirout
   #Find column number
-  columndelno=$(grep $columndel $dirout/.mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
+  columndelno=$(grep $columndel $dirout/mainDataHeader.dat | awk '{print $2}' | sed 's/#//g')
 
   if [[ -z $columndelno ]] ; then
     echo ''
     echo 'Column not found, skipping delete option...'
   else
     #Remove column data
-    awk -v col=$columndelno '!($col="")' $dirout/.mainDataLines.dat > $dirout/.tmp.dat
-    mv $dirout/.tmp.dat $dirout/.mainDataLines.dat
+    awk -v col=$columndelno '!($col="")' $dirout/mainDataLines.dat > $dirout/.tmp.dat
+    mv $dirout/.tmp.dat $dirout/mainDataLines.dat
     #Reformat data header - remove header for deleted column and renumber columns
-    grep -v $columndel $dirout/.mainDataHeader.dat | grep '_rln' | cut -d "#" -f1 | awk '{print $0,"#"FNR}' > $dirout/.tmp.dat
+    grep -v $columndel $dirout/mainDataHeader.dat | grep '_rln' | cut -d "#" -f1 | awk '{print $0,"#"FNR}' > $dirout/.tmp.dat
     #Reformat data header - renumber the header columns
-    printf "data_particles\nloop\n" | cat - $dirout/.tmp.dat > $dirout/.mainDataHeader.dat
+    printf "data_particles\nloop\n" | cat - $dirout/.tmp.dat > $dirout/mainDataHeader.dat
   fi
 fi
 
@@ -67,7 +67,7 @@ if [[ -z $starout ]] ; then
   echo 'No output...'
 else
   #Recombine to new star file
-  cat $dirout/.version.dat <(echo) $dirout/.opticsDataHeader.dat $dirout/.opticsDataLines.dat <(echo) $dirout/.version.dat <(echo) $dirout/.mainDataHeader.dat $dirout/.mainDataLines.dat > tmp.star
+  cat $dirout/.version.dat <(echo) $dirout/opticsDataHeader.dat $dirout/opticsDataLines.dat <(echo) $dirout/.version.dat <(echo) $dirout/mainDataHeader.dat $dirout/mainDataLines.dat > tmp.star
   mv tmp.star $starout
 fi
 
