@@ -36,11 +36,13 @@ echo "------------------------------------------------------------------"
 
 flagcheck=0
 
-while getopts ':-i:c:x:y:s:' flag; do
+while getopts ':-i:c:c1:x:y:s:' flag; do
   case "${flag}" in
     i) starin=$OPTARG
     flagcheck=0 ;;
     c) columnname=$OPTARG    # For manual input
+    flagcheck=1 ;;
+    c1) columnname1=$OPTARG    # For manual input
     flagcheck=1 ;;
     x) xrange=$OPTARG
     flagcheck=1 ;;
@@ -111,6 +113,7 @@ echo ''
 awk -v column=$column -v starin=$starin {'print $column'} $dataLines | grep -v '^$' | cat -n > ${columnname}.dat
 echo 'Number of images to plot data for:' $(wc -l ${columnname}.dat | awk '{print $1}')
 
+#Graph names
 rln_data_plot=rln_data_plot${columnname}.png
 rln_data_hist=rln_data_hist${columnname}.png
 
@@ -132,7 +135,17 @@ EOF
 max=$(cat ${columnname}.dat | awk '{print $2}' | awk '{if(min==""){min=max=$1}; if($1>max) {max=$1}; if($1<min) {min=$1}; total+=$1; count+=1} END {print max}')
 min=$(cat ${columnname}.dat | awk '{print $2}' | awk '{if(min==""){min=max=$1}; if($1>max) {max=$1}; if($1<min) {min=$1}; total+=$1; count+=1} END {print min}')
 
-bin=$(echo "((${max})-(${min}))/30" | bc)
+# default bin size of 30
+bintmp=$(echo "((${max})-(${min}))/30" | bc)
+
+# some datasets might have fewer than 30 values
+if [[ $bintmp == 0 ]] ; then
+  bin="1"
+else
+  bin=$bintmp
+fi
+
+echo $max $min $bin
 
 # Put data into bins for histogram
 

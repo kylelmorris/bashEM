@@ -62,6 +62,23 @@ mainDataLines="mainDataLines.dat"
 mainDataLine="mainDataLine.dat"
 
 ################################################################################
+# Split the file - not yet used, for future development
+# You may want to consider using this so in the future you can parse _model.star files with many data_ blocks
+################################################################################
+
+mkdir -p $dirout/split
+
+csplit -k -f ${dirout}/split/starsplit_ -n 3 ${starin} '/data_/' '{99999}'
+
+for f in ${dirout}/split/* ; do
+  echo $f
+  name=$(sed -n '1p' $f)
+  mv $f ${f}_${name}
+done
+
+exit
+
+################################################################################
 # Get header and data lines
 ################################################################################
 

@@ -35,48 +35,50 @@ dirname=$dir
 ext=$(echo ${dirin##*.})
 name=$(basename $dirin .${ext})
 dir=$(dirname $dirin)
-rlnpath=$(echo $dirname | sed -n -e 's/^.*Refine3D//p')
+rlnpath=$(echo $dirname | sed -n -e 's/^.*Refine3D//p' | cut -d'/' -f2-)
+
+#Set up directory on local
+mkdir -p ${dirout}/Refine3D/${rlnpath}
+
+##Write a README to the backup location with the original location of the files
+# Remote host
+echo "host information (local):" > ${dirout}/Refine3D/${rlnpath}/README
+hostname -s >> ${dirout}/Refine3D/${rlnpath}/README
+echo "" >> ${dirout}/Refine3D/${rlnpath}/README
+# Remote host
+echo "host information (remote):" >> ${dirout}/Refine3D/${rlnpath}/README
+echo $server -s >> ${dirout}/Refine3D/${rlnpath}/README
+echo "" >> ${dirout}/Refine3D/${rlnpath}/README
+# Remote host directory, use this to get true path
+echo "Relion Refine3D directory location:" >> ${dirout}/Refine3D/${rlnpath}/README
+dirbackup=$(ssh $server readlink -f $dirin)
+echo $dirbackup >> ${dirout}/Refine3D/${rlnpath}/README
+echo "" >> ${dirout}/Refine3D/${rlnpath}/README
+# Remote directory name
+echo "Refine3D directory name:" >> ${dirout}/Refine3D/${rlnpath}/README
+echo "Refine3D/${rlnpath}" >> ${dirout}/Refine3D/${rlnpath}/README
+echo "" >> ${dirout}/Refine3D/${rlnpath}/README
 
 #Report what's going to happen
 echo ''
 echo '#########################################################################'
 echo ''
 echo 'Refine3D directory name to be backed up:'
-echo "Refine3D${rlnpath}"
+echo "Refine3D/${rlnpath}"
 echo ''
 echo 'Refine3D directory to be backed up (ignoring symbolic links):'
-echo ${dirin}
+echo ${dirbackup}
 echo ''
 echo 'Backup location is:'
 echo ${dirout}
 echo ''
 echo 'The following directory structure will be created:'
-echo "Refine3D${rlnpath}"
+echo "Refine3D/${rlnpath}"
 echo ''
 echo '#########################################################################'
 echo ''
 echo 'Hit Enter to continue or ctrl-c to quit...'
 read p
-
-#Set up directory on local
-mkdir -p ${dirout}/Refine3D${rlnpath}
-
-#Write a README to the backup location with the original location of the files
-echo "host information (local):" > $dirout/README
-hostname -s >> $dirout/README
-echo "" >> $dirout/README
-
-echo "Refine3D local location:" >> $dirout/README
-echo $(ls -d -1 $dirout) >> $dirout/README
-echo "" >> $dirout/README
-
-echo "host information (remote):" >> $dirout/README
-echo $server -s >> $dirout/README
-echo "" >> $dirout/README
-
-echo "Refine3D remote location:" >> $dirout/README
-echo ${dir} >> $dirout/README
-echo "" >> $dirout/README
 
 #Copy files from specified Refine3D directory to backup location
 #rsync -aP --rsh=\'ssh -p ${port}\' $dirin/run.job \
@@ -90,11 +92,10 @@ $dirin/run_half1_class001_unfil.mrc \
 $dirin/run_half2_class001_unfil.mrc \
 $dirin/*pipeline* \
 $dirin/note.txt" \
-${dirout}/Refine3D${rlnpath}
+${dirout}/Refine3D/${rlnpath}
 
 #Copy run note details to README
-cat $dirout/note.txt >> $dirout/README
-mv $dirout/README ${dirout}/Refine3D${rlnpath}
+cat ${dirout}/Refine3D/${rlnpath}/note.txt >> ${dirout}/Refine3D/${rlnpath}/README
 
 # Finish
 echo ""
