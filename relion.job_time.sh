@@ -36,6 +36,7 @@ etime=$(stat -c %Y $dir/run.out)
 # Report information
 echo
 echo "Time query on job: ${dir}"
+echo
 
 # Time comparison and conversion to hh:mm:ss
 time=$(( ($etime - $stime) ))
